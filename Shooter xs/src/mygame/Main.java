@@ -1,19 +1,27 @@
+/**
+ * Door: Dylan Davids & Sander de jong
+ * Datum(Start) 25 september 2014
+ * Project Shooter xs
+ * mini shooter game als eigen idee graphics
+ */
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.material.Material;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 
 /**
  * test
  * @author normenhansen
  */
 public class Main extends SimpleApplication {
-
+    private BulletAppState bulletAppState;
+        
+    
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
@@ -21,23 +29,31 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        Box b = new Box(1, 1, 1);
-        Geometry geom = new Geometry("Box", b);
-
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
-        geom.setMaterial(mat);
-
-        rootNode.attachChild(geom);
+        bulletAppState = new BulletAppState();
+        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        stateManager.attach(bulletAppState);
+        flyCam.setMoveSpeed(50);
+        createLight();
+        World world = new World(assetManager);
+        rootNode.attachChild(world);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        //TODO: add update code
     }
 
     @Override
     public void simpleRender(RenderManager rm) {
-        //TODO: add render code
+    }
+    
+    public PhysicsSpace getPhysicsSpace() {
+        return bulletAppState.getPhysicsSpace();
+    }
+    
+    public void createLight(){
+        DirectionalLight sun = new DirectionalLight();
+        sun.setColor(ColorRGBA.Yellow);
+        sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
+        rootNode.addLight(sun);
     }
 }

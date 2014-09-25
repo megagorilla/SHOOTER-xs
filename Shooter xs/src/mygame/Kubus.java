@@ -4,10 +4,12 @@
  */
 package mygame;
 
+import com.jme3.scene.Node;
+
 /**
  *
  * @author Sander
  */
-public class Kubus {
+public class Kubus extends Node{
     
 }
