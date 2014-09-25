@@ -9,6 +9,7 @@ package mygame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.input.controls.ActionListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -20,7 +21,7 @@ import com.jme3.renderer.RenderManager;
  */
 public class Main extends SimpleApplication {
     private BulletAppState bulletAppState;
-        
+    Player player;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -35,11 +36,18 @@ public class Main extends SimpleApplication {
         flyCam.setMoveSpeed(50);
         createLight();
         World world = new World(assetManager, bulletAppState);
+        player = new Player(bulletAppState, inputManager, getCamera());
+//        player.setJumpSpeed(20);
+//        player.setFallSpeed(30);
+//        player.setGravity(30);
+//        player.setPhysicsLocation(new Vector3f(-10, 10, 10));
+        //bulletAppState.getPhysicsSpace().add(player);
         rootNode.attachChild(world);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
+        player.update(cam);
     }
 
     @Override

@@ -27,8 +27,12 @@ public class World extends Node{
     Box floor = new Box(Vector3f.ZERO, 75f, 0.5f, 75f);
     Geometry floorGeom;
     Material worldMat;
-    World(AssetManager assetManager,BulletAppState bulletAppState){
-        initMaterial(assetManager);
+    AssetManager assetManager;
+    BulletAppState bulletAppState;
+    World(AssetManager assetmanager,BulletAppState bulletappstate){
+        assetManager = assetmanager;
+        bulletAppState = bulletappstate;
+        initMaterial();
         
         floorGeom = new Geometry("Box", floor);
         floorGeom.setMaterial(worldMat);
@@ -38,7 +42,7 @@ public class World extends Node{
         attachChild(floorGeom);
     }
     
-    private void initMaterial(AssetManager assetManager){
+    private void initMaterial(){
         worldMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         worldMat.setColor("Diffuse",ColorRGBA.White);
         worldMat.setColor("Specular",ColorRGBA.White);
