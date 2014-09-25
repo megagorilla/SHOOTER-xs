@@ -36,7 +36,7 @@ public class Main extends SimpleApplication {
         flyCam.setMoveSpeed(50);
         createLight();
         World world = new World(assetManager, bulletAppState);
-        player = new Player(bulletAppState, inputManager, getCamera());
+        //player = new Player(bulletAppState, inputManager, getCamera());
 //        player.setJumpSpeed(20);
 //        player.setFallSpeed(30);
 //        player.setGravity(30);
@@ -47,7 +47,7 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        player.update(cam);
+        //player.update(cam);
     }
 
     @Override
