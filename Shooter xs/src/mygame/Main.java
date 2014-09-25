@@ -34,7 +34,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(bulletAppState);
         flyCam.setMoveSpeed(50);
         createLight();
-        World world = new World(assetManager);
+        World world = new World(assetManager, bulletAppState);
         rootNode.attachChild(world);
     }
 
