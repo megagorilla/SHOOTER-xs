@@ -20,7 +20,7 @@ import com.jme3.renderer.RenderManager;
  */
 public class Main extends SimpleApplication {
     private BulletAppState bulletAppState;
-        
+    Player player;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -32,7 +32,8 @@ public class Main extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        flyCam.setMoveSpeed(50);
+        //flyCam.setMoveSpeed(50);
+        player = new Player(bulletAppState, inputManager, cam);
         createLight();
         World world = new World(assetManager, bulletAppState);
         rootNode.attachChild(world);
@@ -40,6 +41,7 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+        player.update();
     }
 
     @Override
