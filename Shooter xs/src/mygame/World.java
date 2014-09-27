@@ -34,7 +34,7 @@ public class World extends Node{
         floorGeom.setMaterial(worldMat);
         floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
         floorGeom.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(75, 0.5f, 75)), 0));
-        
+        bulletAppState.getPhysicsSpace().add(floorGeom);
         attachChild(floorGeom);
     }
     

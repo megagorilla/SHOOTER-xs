@@ -53,17 +53,13 @@ public class Player implements ActionListener {
     inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
     inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-    inputManager.addMapping("Reload", new KeyTrigger(KeyInput.KEY_R));
-    inputManager.addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-    inputManager.addMapping("Zoom", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+    
     inputManager.addListener(this, "Left");
     inputManager.addListener(this, "Right");
     inputManager.addListener(this, "Up");
     inputManager.addListener(this, "Down");
     inputManager.addListener(this, "Jump");
-    inputManager.addListener(this, "Shoot");
-    inputManager.addListener(this, "Zoom");
-    inputManager.addListener(this, "Reload");
+
   }
     
     public void onAction(String binding, boolean value, float tpf) {
