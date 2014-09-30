@@ -36,6 +36,7 @@ public class Main extends SimpleApplication {
     public Gun gun;
     
     public static void main(String[] args) {
+
         Main app = new Main();
         app.start();
     }
@@ -55,7 +56,7 @@ public class Main extends SimpleApplication {
         world = new World(assetManager, bulletAppState, 50f, 50f);
 
         flyCam.setMoveSpeed(50);
-        gun = new Gun(assetManager);
+        gun = new Gun(assetManager, viewPort, bulletAppState, cam);
         player = new Player(bulletAppState, inputManager,assetManager, cam, gun);
         rootNode.attachChild(gun);
         createLight();
@@ -65,7 +66,7 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        player.update();
+        player.update(tpf);
     }
 
     @Override

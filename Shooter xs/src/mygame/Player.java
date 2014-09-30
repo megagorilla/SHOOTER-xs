@@ -5,6 +5,7 @@
 package mygame;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
@@ -32,13 +33,18 @@ public class Player extends Node implements ActionListener {
     private Vector3f camLeft = new Vector3f();
     Camera cam;
     
+    AudioNode gunSound;
+    
     Gun gun;
+    float shootdelay = 0;
+    int inmagazine;
+    int magsize = 50;
     Vector3f camPos = new Vector3f();
     Vector3f gunBaseOffset = new Vector3f(-0.1f,-0.3f,1f); //offset from cam when looking straight ahead
     Vector3f tmpOffset = new Vector3f();
     Quaternion camRot = new Quaternion();
     
-    private boolean left = false, right = false, up = false, down = false;
+    private boolean left = false, right = false, up = false, down = false,shoot = false;
     CapsuleCollisionShape capsuleShape;
     BulletAppState bulletAppState;
     InputManager inputManager;
@@ -50,13 +56,16 @@ public class Player extends Node implements ActionListener {
         assetManager = assetmanager;
         cam = Cam;
         gun = gunn;
+        inmagazine = magsize;
+        
+        gunSound = new AudioNode(assetManager, "Sounds/lasergun.wav");
         
         capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(-10, 5, 10));
+        player.setPhysicsLocation(new Vector3f(-10, 10, 10));
         bulletAppState.getPhysicsSpace().add(player);
         setUpKeys();
         
@@ -68,12 +77,13 @@ public class Player extends Node implements ActionListener {
     inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
     inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-    
+    inputManager.addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     inputManager.addListener(this, "Left");
     inputManager.addListener(this, "Right");
     inputManager.addListener(this, "Up");
     inputManager.addListener(this, "Down");
     inputManager.addListener(this, "Jump");
+    inputManager.addListener(this, "Shoot");
 
   }
     
@@ -86,12 +96,14 @@ public class Player extends Node implements ActionListener {
       if (value) { up = true; } else { up = false; }
     } else if (binding.equals("Down")) {
       if (value) { down = true; } else { down = false; }
-    }   else if (binding.equals("Jump")) {
+    } else if(binding.equals("Shoot")) {
+      if (value) { shoot = true; } else { shoot = false;}
+    } else if (binding.equals("Jump")) {
         player.jump();
     }
 }
     
-    public void update(){
+    public void update(float tpf){
         camDir.set(cam.getDirection()).multLocal(0.6f);
         camLeft.set(cam.getLeft()).multLocal(0.4f);
         walkDirection.set(0, 0, 0);
@@ -107,6 +119,17 @@ public class Player extends Node implements ActionListener {
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
+        if (shoot && inmagazine > 0) {
+            if(shootdelay <= 0){
+                gun.shoot();
+                inmagazine--;
+                shootdelay = 0.05f/tpf;
+                gunSound.playInstance();
+            }
+            else
+                shootdelay--;
+        }
+        walkDirection.y = 0;
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());
         
