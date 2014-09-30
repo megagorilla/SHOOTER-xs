@@ -5,16 +5,21 @@
 package mygame;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
 /**
  *
- * @author Dylankuyjt67hr
+ * @author Sander
  */
 public class World extends Node {
     private AssetManager am;
@@ -26,21 +31,27 @@ public class World extends Node {
     Box wall;
     Geometry wallGeom;
     
-    public World(AssetManager assetManager, float floorW, float floorL){
+    World(AssetManager assetManager, BulletAppState bulletAppState, float floorW, float floorL){
         am = assetManager;
-        floor = new Box(Vector3f.ZERO, floorW, 0.5f, floorL);
+       
+        floor = new Box(floorW, 0.5f, floorL);
         floorGeom = new Geometry("Box", floor);
-        floorGeom.setLocalTranslation(0f, 0f, 0f);
+        floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
+        floorGeom.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(75, 0.5f, 75)), 0));
+        bulletAppState.getPhysicsSpace().add(floorGeom);        
         
-        initMaterial();
-        
+        initMaterial(am);
+       
         attachChild(floorGeom);
     }
     
-    private void initMaterial(){
-        floorMat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
+    private void initMaterial(AssetManager assetManager){
+        floorMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        floorMat.setColor("Diffuse",ColorRGBA.White);
+        floorMat.setColor("Specular",ColorRGBA.White);
+        floorMat.setFloat("Shininess", 64f);
         floorMat.setColor("GlowColor", ColorRGBA.LightGray);
-        floorMat.setColor("Color", ColorRGBA.Gray);
+        floorMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
         floorGeom.setMaterial(floorMat);
     }

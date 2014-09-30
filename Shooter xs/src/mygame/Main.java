@@ -29,7 +29,7 @@ public class Main extends SimpleApplication {
     private BloomFilter bloom;
     private Random rand = new Random();
     private List<Kubus> cube;
-        
+    Player player;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -38,24 +38,28 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        flyCam.setMoveSpeed(50);
-        
+        viewPort.setBackgroundColor(ColorRGBA.White);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        
+
         createLight();
         initViewport();
         cube = new ArrayList<Kubus>();
         generateCubes();
         
-        World world = new World(assetManager, 50f, 50f);
-     
+        World world = new World(assetManager, bulletAppState, 50f, 50f);
+
+        flyCam.setMoveSpeed(50);
+        player = new Player(bulletAppState, inputManager,assetManager, cam);
+        createLight();
+
         rootNode.attachChild(world);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
+        player.update();
     }
 
     @Override
@@ -81,7 +85,7 @@ public class Main extends SimpleApplication {
         sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
         rootNode.addLight(sun);
     }
-    
+  
     float positiveRandomFloat(){
         return rand.nextFloat() + rand.nextInt(50);
     }
