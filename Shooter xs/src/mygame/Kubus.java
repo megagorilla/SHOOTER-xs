@@ -63,8 +63,8 @@ public class Kubus extends Node{
         this.position = position;
     }
 
-    public Box getKubus() {
-        return kubus;
+    public Geometry getkubusGeom() {
+        return kubusGeom;
     }
     
     private void initMaterial(){

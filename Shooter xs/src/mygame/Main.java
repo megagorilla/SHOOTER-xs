@@ -12,6 +12,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResults;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -25,6 +26,7 @@ import java.util.Random;
  * @author normenhansen
  */
 public class Main extends SimpleApplication {
+    private World world;
     private BulletAppState bulletAppState;
     private FilterPostProcessor fpp;
     private BloomFilter bloom;
@@ -50,7 +52,7 @@ public class Main extends SimpleApplication {
         cube = new ArrayList<Kubus>();
         generateCubes();
         
-        World world = new World(assetManager, bulletAppState, 50f, 50f);
+        world = new World(assetManager, bulletAppState, 50f, 50f);
 
         flyCam.setMoveSpeed(50);
         gun = new Gun(assetManager);
@@ -91,9 +93,9 @@ public class Main extends SimpleApplication {
     }
   
     float randomFloat(int negOrPos){
-        int rf = rand.nextInt(10);
+        int rf = rand.nextInt(8);
         while(rf < 1){
-            rf = rand.nextInt(10);
+            rf = rand.nextInt(8);
         }
         if(negOrPos == 1)
             return rand.nextFloat() + rf;
@@ -102,23 +104,24 @@ public class Main extends SimpleApplication {
     }
     
     private void generateCubes(){
-        int negOrPos = rand.nextInt(1);
         CollisionResults results = new CollisionResults();
         for(int i = 0; i < 8; i++){
-            Vector3f size = new Vector3f(randomFloat(negOrPos), 4.0f, randomFloat(negOrPos));
-            Vector3f pos = new Vector3f(randomFloat(negOrPos), 4.0f, randomFloat(negOrPos));
+            int negOrPos = rand.nextInt(2);
+            float height = randomFloat(1)*2f;
+            Vector3f size = new Vector3f(randomFloat(1), height, randomFloat(1));
+            Vector3f pos = new Vector3f(randomFloat(negOrPos)*10f, height, randomFloat(negOrPos)*10f);
             if(cube.isEmpty()){
                 cube.add(new Kubus(assetManager, bulletAppState, size, pos));
                 rootNode.attachChild(cube.get(i));
             } else {
                 cube.add(new Kubus(assetManager, bulletAppState, size, pos));
                 rootNode.attachChild(cube.get(i));
-//                for(int j = 0; j < cube.size(); j++){
-//                    cube.get(j).collideWith(cube.get(i), results);
-//                    if (results.size() > 0) {
-//                        cube.get(i).setPosition(pos);
-//                    }
-//                }
+                for(int j = 0; j < cube.size(); j++){
+                    cube.get(j).getkubusGeom().collideWith(cube.get(i).getkubusGeom().getWorldBound(), results);
+                    if (results.size() > 0) {
+                        cube.get(i).setPosition(new Vector3f(randomFloat(negOrPos)*10f, 4.0f, randomFloat(negOrPos)*10f));
+                    }
+                }
             }
             System.out.println(randomFloat(negOrPos) + " < float");            
         }  
