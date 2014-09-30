@@ -47,7 +47,6 @@ public class Gun extends Node {
         
         gunBox = new Box(Vector3f.ZERO, 0.05f, 0.08f, 0.3f);
         gunGeom = new Geometry("Gun", gunBox);
-        ColorRGBA neoGreen = new ColorRGBA(57f, 255f, 20f, 1.0f);
         gunMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 
         gunMat.setColor("Color",ColorRGBA.Green);
@@ -73,7 +72,7 @@ public class Gun extends Node {
                 bullets.get(bullets.size()-1).setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
                 bullets.get(bullets.size()-1).setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(2)));
                 
-                SphereCollisionShape bulletCollisionShape = new SphereCollisionShape(1.0f);
+                SphereCollisionShape bulletCollisionShape = new SphereCollisionShape(0.1f);
                 RigidBodyControl bulletNode = new RigidBodyControl(bulletCollisionShape, 10.0f);
                 bulletNode.setLinearVelocity(cam.getDirection().mult(250));
                 bullets.get(bullets.size()-1).addControl(bulletNode);

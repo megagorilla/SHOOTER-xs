@@ -47,7 +47,8 @@ public class Main extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-
+        
+        
         createLight();
         initViewport();
         cube = new ArrayList<Kubus>();
@@ -62,6 +63,11 @@ public class Main extends SimpleApplication {
         createLight();
 
         rootNode.attachChild(world);
+        
+        if(true){ //enable/disable debug mode
+            bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+            player.debug();
+        }
     }
 
     @Override

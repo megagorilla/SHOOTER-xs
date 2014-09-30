@@ -70,6 +70,11 @@ public class Player extends Node implements ActionListener {
         setUpKeys();
         
     }
+    
+    public void debug(){
+        magsize = 2147483647;
+        inmagazine = 2147483647;
+    }
 
     private void setUpKeys() {
     inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
