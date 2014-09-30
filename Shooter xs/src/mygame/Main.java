@@ -90,34 +90,37 @@ public class Main extends SimpleApplication {
         rootNode.addLight(sun);
     }
   
-    float randomFloat(){
+    float randomFloat(int negOrPos){
         int rf = rand.nextInt(10);
         while(rf < 1){
             rf = rand.nextInt(10);
         }
-        return rand.nextFloat() + rf;
+        if(negOrPos == 1)
+            return rand.nextFloat() + rf;
+        else
+            return rand.nextFloat() - rf;
     }
     
     private void generateCubes(){
         int negOrPos = rand.nextInt(1);
         CollisionResults results = new CollisionResults();
         for(int i = 0; i < 8; i++){
-            Vector3f size = new Vector3f(randomFloat(), 4.0f, randomFloat());
-            Vector3f pos = new Vector3f(randomFloat(), 4.f, randomFloat());
+            Vector3f size = new Vector3f(randomFloat(negOrPos), 4.0f, randomFloat(negOrPos));
+            Vector3f pos = new Vector3f(randomFloat(negOrPos), 4.0f, randomFloat(negOrPos));
             if(cube.isEmpty()){
                 cube.add(new Kubus(assetManager, bulletAppState, size, pos));
                 rootNode.attachChild(cube.get(i));
             } else {
                 cube.add(new Kubus(assetManager, bulletAppState, size, pos));
                 rootNode.attachChild(cube.get(i));
-                for(int j = 0; j < cube.size(); j++){
-                    cube.get(j).collideWith(cube.get(i), null);
-                    if (results.size() > 0) {
-                        cube.get(i).setPosition(pos);
-                    }
-                }
+//                for(int j = 0; j < cube.size(); j++){
+//                    cube.get(j).collideWith(cube.get(i), results);
+//                    if (results.size() > 0) {
+//                        cube.get(i).setPosition(pos);
+//                    }
+//                }
             }
-            System.out.println(randomFloat() + " < float");            
+            System.out.println(randomFloat(negOrPos) + " < float");            
         }  
     }
 }

@@ -62,6 +62,10 @@ public class Kubus extends Node{
     public void setPosition(Vector3f position) {
         this.position = position;
     }
+
+    public Box getKubus() {
+        return kubus;
+    }
     
     private void initMaterial(){
         kubusMat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
