@@ -38,13 +38,29 @@ public class Kubus extends Node{
     
         initMaterial();
         
-        RBC = new RigidBodyControl(0f);
+        RBC = new RigidBodyControl(0.1f);
         kubusGeom.addControl(RBC);
         kubusGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         RBC.setPhysicsLocation(position);
         BAS.getPhysicsSpace().add(RBC);
         
         attachChild(kubusGeom);
+    }
+
+    public Vector3f getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(Vector3f dimension) {
+        this.dimension = dimension;
+    }
+
+    public Vector3f getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
     }
     
     private void initMaterial(){

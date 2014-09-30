@@ -15,6 +15,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.renderer.RenderManager;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,6 +28,7 @@ public class Main extends SimpleApplication {
     private FilterPostProcessor fpp;
     private BloomFilter bloom;
     private Random rand = new Random();
+    private List<Kubus> cube;
         
     
     public static void main(String[] args) {
@@ -40,17 +43,13 @@ public class Main extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-
+        
         createLight();
         initViewport();
+        cube = new ArrayList<Kubus>();
+        generateCubes();
         
         World world = new World(assetManager, 50f, 50f);
-        
-        for(int i = 0; i < 8; i++){
-            Kubus kubus = new Kubus(assetManager, bulletAppState, new Vector3f(positiveRandomFloat(), positiveRandomFloat(), positiveRandomFloat()), new Vector3f(positiveRandomFloat(), 4f, positiveRandomFloat()));
-            System.out.println(positiveRandomFloat() + " < float");
-            rootNode.attachChild(kubus);
-        }
      
         rootNode.attachChild(world);
     }
@@ -85,5 +84,20 @@ public class Main extends SimpleApplication {
     
     float positiveRandomFloat(){
         return rand.nextFloat() + rand.nextInt(50);
+    }
+    
+    private void generateCubes(){
+        for(int i = 0; i < 8; i++){
+            Vector3f size = new Vector3f(positiveRandomFloat(), 4.0f, positiveRandomFloat());
+            Vector3f pos = new Vector3f(positiveRandomFloat(), 4f, positiveRandomFloat());
+            if(cube.isEmpty()){
+                cube.add(new Kubus(assetManager, bulletAppState, size, pos));
+                rootNode.attachChild(cube.get(i));
+            } else {
+                cube.add(new Kubus(assetManager, bulletAppState, size, pos));
+                rootNode.attachChild(cube.get(i));
+            }
+            System.out.println(positiveRandomFloat() + " < float");            
+        }  
     }
 }
