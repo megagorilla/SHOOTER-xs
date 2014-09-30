@@ -29,11 +29,12 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        viewPort.setBackgroundColor(ColorRGBA.White);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
         //flyCam.setMoveSpeed(50);
-        player = new Player(bulletAppState, inputManager, cam);
+        player = new Player(bulletAppState, inputManager,assetManager, cam);
         createLight();
         World world = new World(assetManager, bulletAppState);
         rootNode.attachChild(world);

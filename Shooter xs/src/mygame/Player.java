@@ -4,6 +4,7 @@
  */
 package mygame;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
@@ -15,27 +16,34 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Node;
 
 /**
  *
  * @author Sander
  */
-public class Player implements ActionListener {
+public class Player extends Node implements ActionListener {
     //attributes
     private CharacterControl player;
     private Vector3f walkDirection = new Vector3f();
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     Camera cam;
+    public Gun gun;
     private boolean left = false, right = false, up = false, down = false;
     CapsuleCollisionShape capsuleShape;
     BulletAppState bulletAppState;
     InputManager inputManager;
+    AssetManager assetManager;
     
-    Player(BulletAppState bulletappstate, InputManager inputmanager, Camera Cam){
+    Player(BulletAppState bulletappstate, InputManager inputmanager,AssetManager assetmanager, Camera Cam){
         bulletAppState = bulletappstate;
         inputManager = inputmanager;
+        assetManager = assetmanager;
         cam = Cam;
+        gun = new Gun(assetManager, bulletappstate);
+        attachChild(gun);
+        gun.move(0.5f, 0.5f, 0.5f);
         capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(20);
