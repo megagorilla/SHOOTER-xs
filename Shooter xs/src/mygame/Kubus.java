@@ -38,7 +38,7 @@ public class Kubus extends Node{
     
         initMaterial();
         
-        RBC = new RigidBodyControl(0.1f);
+        RBC = new RigidBodyControl(0f);
         kubusGeom.addControl(RBC);
         kubusGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         RBC.setPhysicsLocation(position);
