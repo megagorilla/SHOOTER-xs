@@ -30,6 +30,7 @@ public class Main extends SimpleApplication {
     private Random rand = new Random();
     private List<Kubus> cube;
     Player player;
+    public Gun gun;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -51,7 +52,9 @@ public class Main extends SimpleApplication {
         World world = new World(assetManager, bulletAppState, 50f, 50f);
 
         flyCam.setMoveSpeed(50);
-        player = new Player(bulletAppState, inputManager,assetManager, cam);
+        gun = new Gun(assetManager);
+        player = new Player(bulletAppState, inputManager,assetManager, cam, gun);
+        rootNode.attachChild(gun);
         createLight();
 
         rootNode.attachChild(world);

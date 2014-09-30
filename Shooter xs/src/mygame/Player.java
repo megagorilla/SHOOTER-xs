@@ -14,6 +14,8 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
@@ -29,27 +31,32 @@ public class Player extends Node implements ActionListener {
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     Camera cam;
-    public Gun gun;
+    
+    Gun gun;
+    Vector3f camPos = new Vector3f();
+    Vector3f gunBaseOffset = new Vector3f(-0.1f,-0.3f,1f); //offset from cam when looking straight ahead
+    Vector3f tmpOffset = new Vector3f();
+    Quaternion camRot = new Quaternion();
+    
     private boolean left = false, right = false, up = false, down = false;
     CapsuleCollisionShape capsuleShape;
     BulletAppState bulletAppState;
     InputManager inputManager;
     AssetManager assetManager;
     
-    Player(BulletAppState bulletappstate, InputManager inputmanager,AssetManager assetmanager, Camera Cam){
+    Player(BulletAppState bulletappstate, InputManager inputmanager,AssetManager assetmanager, Camera Cam, Gun gunn){
         bulletAppState = bulletappstate;
         inputManager = inputmanager;
         assetManager = assetmanager;
         cam = Cam;
-        gun = new Gun(assetManager, bulletappstate);
-        attachChild(gun);
-        gun.move(0.5f, 0.5f, 0.5f);
+        gun = gunn;
+        
         capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(-10, 100, 10));
+        player.setPhysicsLocation(new Vector3f(-10, 5, 10));
         bulletAppState.getPhysicsSpace().add(player);
         setUpKeys();
         
@@ -102,5 +109,16 @@ public class Player extends Node implements ActionListener {
         }
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());
+        
+        Quaternion extrarotation = new Quaternion(0.0f,-FastMath.PI/4 , 0.0f, 0.0f);
+        gun.setLocalRotation(extrarotation);
+        camPos.set(cam.getLocation());
+        camRot.fromAxes(cam.getLeft(), cam.getUp(), cam.getDirection());
+        tmpOffset.set(gunBaseOffset);
+        camRot.multLocal(tmpOffset);
+        camPos.addLocal(tmpOffset);
+
+        gun.getLocalTranslation().set(camPos);
+        gun.getLocalRotation().set(camRot);
     }
 }

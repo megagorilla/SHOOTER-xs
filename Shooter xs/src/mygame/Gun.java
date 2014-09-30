@@ -24,20 +24,18 @@ public class Gun extends Node {
     Geometry gunGeom;
     Material gunMat;
     AssetManager assetManager;
-    BulletAppState bulletAppState;
     
-    Gun(AssetManager assetmanager,BulletAppState bulletappstate){
+    Gun(AssetManager assetmanager){
         assetManager = assetmanager;
-        bulletAppState = bulletappstate;
         
-        gunBox = new Box(Vector3f.ZERO, 0.25f, 0.5f, 1f);
+        gunBox = new Box(Vector3f.ZERO, 0.05f, 0.08f, 0.3f);
         gunGeom = new Geometry("Gun", gunBox);
         ColorRGBA neoGreen = new ColorRGBA(57f, 255f, 20f, 1.0f);
-        gunMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        gunMat.setColor("Diffuse", ColorRGBA.Green);
-        gunMat.setColor("Specular",ColorRGBA.Green);
-        gunMat.setFloat("Shininess", 64f);
+        gunMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+
+        gunMat.setColor("Color",ColorRGBA.Green);
         gunMat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+        gunMat.getAdditionalRenderState().setWireframe(true);
         
         gunGeom.setMaterial(gunMat);
         gunGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
