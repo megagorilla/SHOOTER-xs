@@ -23,13 +23,13 @@ import com.jme3.scene.shape.Box;
  */
 public class World extends Node {
     private AssetManager am;
-    Box floor;
-    Geometry floorGeom;
-    Material floorMat;
-    float floorW;
-    float floorL;
-    Box wall;
-    Geometry wallGeom;
+    private Box floor;
+    private Geometry floorGeom;
+    private Material floorMat;
+    private float floorW;
+    private float floorL;
+    private Box wall;
+    private Geometry wallGeom;
     
     World(AssetManager assetManager, BulletAppState bulletAppState, float floorW, float floorL){
         am = assetManager;

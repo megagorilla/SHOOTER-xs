@@ -31,24 +31,24 @@ public class Player extends Node implements ActionListener {
     private Vector3f walkDirection = new Vector3f();
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
-    Camera cam;
+    private Camera cam;
     
-    AudioNode gunSound;
+    private AudioNode gunSound;
     
-    Gun gun;
-    float shootdelay = 0;
-    int inmagazine;
-    int magsize = 50;
-    Vector3f camPos = new Vector3f();
-    Vector3f gunBaseOffset = new Vector3f(-0.1f,-0.3f,1f); //offset from cam when looking straight ahead
-    Vector3f tmpOffset = new Vector3f();
-    Quaternion camRot = new Quaternion();
+    private Gun gun;
+    private float shootdelay = 0;
+    private int inmagazine;
+    private int magsize = 50;
+    private Vector3f camPos = new Vector3f();
+    private Vector3f gunBaseOffset = new Vector3f(-0.1f,-0.3f,1f); //offset from cam when looking straight ahead
+    private Vector3f tmpOffset = new Vector3f();
+    private Quaternion camRot = new Quaternion();
     
     private boolean left = false, right = false, up = false, down = false,shoot = false;
-    CapsuleCollisionShape capsuleShape;
-    BulletAppState bulletAppState;
-    InputManager inputManager;
-    AssetManager assetManager;
+    private CapsuleCollisionShape capsuleShape;
+    private BulletAppState bulletAppState;
+    private InputManager inputManager;
+    private AssetManager assetManager;
     
     Player(BulletAppState bulletappstate, InputManager inputmanager,AssetManager assetmanager, Camera Cam, Gun gunn){
         bulletAppState = bulletappstate;

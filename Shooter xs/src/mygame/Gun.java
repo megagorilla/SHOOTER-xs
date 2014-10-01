@@ -28,16 +28,16 @@ import java.util.List;
  * @author Sander
  */
 public class Gun extends Node {
-    Box gunBox;
-    Geometry gunGeom;
-    Material gunMat;
-    AssetManager assetManager;
+    private Box gunBox;
+    private Geometry gunGeom;
+    private Material gunMat;
+    private AssetManager assetManager;
     private List<Geometry> bullets = new ArrayList<Geometry>();
     private static Sphere bullet;
     private static SphereCollisionShape bulletCollisionShape;
-    ViewPort viewPort;
-    BulletAppState bulletAppState;
-    Camera cam;
+    private ViewPort viewPort;
+    private BulletAppState bulletAppState;
+    private Camera cam;
     
     Gun(AssetManager assetmanager, ViewPort viewport, BulletAppState bulletappstate, Camera Cam){
         assetManager = assetmanager;
