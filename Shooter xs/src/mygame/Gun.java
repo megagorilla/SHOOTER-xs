@@ -39,12 +39,19 @@ public class Gun extends Node {
     private ViewPort viewPort;
     private BulletAppState bulletAppState;
     private Camera cam;
+    private int gunSpeed;
+    private int maxBullets;
+
+    public void setMaxBullets(int maxBullets) {
+        this.maxBullets = maxBullets;
+    }
     
     Gun(AssetManager assetmanager, ViewPort viewport, BulletAppState bulletappstate, Camera Cam){
         assetManager = assetmanager;
         viewPort = viewport;
         bulletAppState = bulletappstate;
         cam = Cam;
+        maxBullets = 100;
         
         gunBox = new Box(Vector3f.ZERO, 0.05f, 0.08f, 0.3f);
         gunGeom = new Geometry("Gun", gunBox);
@@ -60,6 +67,7 @@ public class Gun extends Node {
         initBullet();
         
     }
+    
     
     private void initBullet(){
         bullet = new Sphere(4, 4, 0.1f, true, false);
@@ -80,7 +88,7 @@ public class Gun extends Node {
         bullets.get(bullets.size()-1).addControl(bulletNodes.get(bullets.size()-1));
         bulletAppState.getPhysicsSpace().add(bulletNodes.get(bullets.size()-1));
         attachChild(bullets.get(bullets.size()-1));
-        if(bullets.size()>50){
+        if(bullets.size()>maxBullets){
             detachChild(bullets.get(0));
             bulletAppState.getPhysicsSpace().remove(bulletNodes.get(0));
              bullets.remove(0);

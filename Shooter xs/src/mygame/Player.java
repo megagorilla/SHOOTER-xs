@@ -39,6 +39,7 @@ public class Player extends Node implements ActionListener {
     private float shootdelay = 0;
     private int inmagazine;
     private int magsize = 50;
+    private int gunspeed = 50;
     private Vector3f camPos = new Vector3f();
     private Vector3f gunBaseOffset = new Vector3f(-0.1f,-0.3f,1f); //offset from cam when looking straight ahead
     private Vector3f tmpOffset = new Vector3f();
@@ -107,6 +108,16 @@ public class Player extends Node implements ActionListener {
     }
 }
     
+    public void setMinigun(){
+        gun.setMaxBullets(100);
+        gunspeed = 20000;
+    }
+    
+    public void setNormalgun(){
+        gun.setMaxBullets(50);
+        gunspeed = 50;
+    }
+    
     public void update(float tpf){
         camDir.set(cam.getDirection()).multLocal(0.6f);
         camLeft.set(cam.getLeft()).multLocal(0.4f);
@@ -131,9 +142,9 @@ public class Player extends Node implements ActionListener {
                 gunSound.playInstance();
             }
             else
-                shootdelay-=50f*tpf;
+                shootdelay-=gunspeed*tpf;
         }
-        
+        System.out.println(shootdelay);
         walkDirection.y = 0;
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());

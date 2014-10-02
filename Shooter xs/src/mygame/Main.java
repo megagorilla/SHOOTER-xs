@@ -66,6 +66,7 @@ public class Main extends SimpleApplication {
         if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
+            player.setMinigun();
         }
     }
 
