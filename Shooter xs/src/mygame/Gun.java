@@ -70,7 +70,7 @@ public class Gun extends Node {
     
     
     private void initBullet(){
-        bullet = new Sphere(4, 4, 0.1f, true, false);
+        bullet = new Sphere(10, 10, 0.05f, true, false);
         bullet.setTextureMode(Sphere.TextureMode.Projected);
         bulletCollisionShape = new SphereCollisionShape(0.1f);
     }
@@ -83,8 +83,8 @@ public class Gun extends Node {
         
         bulletNodes.add(new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(bullets.get(bullets.size()-1)), 0.1f));
         bulletNodes.get(bulletNodes.size()-1).setCcdMotionThreshold(0.015f);
-        bulletNodes.get(bulletNodes.size()-1).setCcdSweptSphereRadius(0.01f);
-        bulletNodes.get(bullets.size()-1).setLinearVelocity(cam.getDirection().mult(250));
+        bulletNodes.get(bulletNodes.size()-1).setCcdSweptSphereRadius(0.005f);
+        bulletNodes.get(bullets.size()-1).setLinearVelocity(cam.getDirection().mult(100));
         bullets.get(bullets.size()-1).addControl(bulletNodes.get(bullets.size()-1));
         bulletAppState.getPhysicsSpace().add(bulletNodes.get(bullets.size()-1));
         attachChild(bullets.get(bullets.size()-1));

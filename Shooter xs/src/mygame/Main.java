@@ -124,7 +124,7 @@ public class Main extends SimpleApplication {
     public void initViewport(){
         fpp = new FilterPostProcessor(assetManager);
         bloom = new BloomFilter(BloomFilter.GlowMode.Objects);      
-        bloom.setDownSamplingFactor(1.0f); 
+        bloom.setDownSamplingFactor(10.0f); 
         fpp.addFilter(bloom);
         
         viewPort.addProcessor(fpp);

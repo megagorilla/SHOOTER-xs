@@ -109,7 +109,7 @@ public class Player extends Node implements ActionListener {
     
     public void setMinigun(){
         gun.setMaxBullets(100);
-        gunspeed = 20000;
+        gunspeed = 500;
     }
     
     public void setNormalgun(){
@@ -143,7 +143,6 @@ public class Player extends Node implements ActionListener {
             else
                 shootdelay-=gunspeed*tpf;
         }
-        System.out.println(shootdelay);
         walkDirection.y = 0;
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());
