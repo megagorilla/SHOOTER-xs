@@ -9,6 +9,7 @@ import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -33,6 +34,7 @@ public class Gun extends Node {
     private Material gunMat;
     private AssetManager assetManager;
     private List<Geometry> bullets = new ArrayList<Geometry>();
+    private List<RigidBodyControl> bulletNodes = new ArrayList<RigidBodyControl>();
     private static Sphere bullet;
     private static SphereCollisionShape bulletCollisionShape;
     private ViewPort viewPort;
@@ -63,7 +65,7 @@ public class Gun extends Node {
     private void initBullet(){
         bullet = new Sphere(4, 4, 0.1f, true, false);
         bullet.setTextureMode(Sphere.TextureMode.Projected);
-        bulletCollisionShape = new SphereCollisionShape(0.4f);
+        bulletCollisionShape = new SphereCollisionShape(0.1f);
     }
     
         public void shoot(){
@@ -72,15 +74,21 @@ public class Gun extends Node {
                 bullets.get(bullets.size()-1).setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
                 bullets.get(bullets.size()-1).setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(2)));
                 
-                SphereCollisionShape bulletCollisionShape = new SphereCollisionShape(0.1f);
-                RigidBodyControl bulletNode = new RigidBodyControl(bulletCollisionShape, 10.0f);
-                bulletNode.setLinearVelocity(cam.getDirection().mult(250));
-                bullets.get(bullets.size()-1).addControl(bulletNode);
+                bulletNodes.add(new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(bullets.get(bullets.size()-1)), 10.0f));
+                
+                bulletNodes.get(bullets.size()-1).setLinearVelocity(cam.getDirection().mult(250));
+                bullets.get(bullets.size()-1).addControl(bulletNodes.get(bullets.size()-1));
+                bulletAppState.getPhysicsSpace().add(bulletNodes.get(bullets.size()-1));
                 attachChild(bullets.get(bullets.size()-1));
-                if(bullets.size()>200){
-                    bullets.remove(0);
+                if(bullets.size()>10){
+                    //bullets.get(0).removeControl(bulletNodes.get(bullets.size()-1));
+                    
+                    
                     detachChild(bullets.get(0));
+                    bulletAppState.getPhysicsSpace().remove(bulletNodes.get(0));
+                    bullets.remove(0);
+                    bulletNodes.remove(0);
                 }
-                bulletAppState.getPhysicsSpace().add(bulletNode);
+                
     }
 }

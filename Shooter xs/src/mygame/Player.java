@@ -65,10 +65,9 @@ public class Player extends Node implements ActionListener {
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(-10, 10, 10));
+        player.setPhysicsLocation(new Vector3f(0, 10, 0));
         bulletAppState.getPhysicsSpace().add(player);
         setUpKeys();
-        
     }
     
     public void debug(){
@@ -128,12 +127,13 @@ public class Player extends Node implements ActionListener {
             if(shootdelay <= 0){
                 gun.shoot();
                 inmagazine--;
-                shootdelay = 0.05f/tpf;
+                shootdelay =10;
                 gunSound.playInstance();
             }
             else
-                shootdelay--;
+                shootdelay-=50f*tpf;
         }
+        
         walkDirection.y = 0;
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());

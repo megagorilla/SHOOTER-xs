@@ -7,7 +7,9 @@ package mygame;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
@@ -37,8 +39,10 @@ public class World extends Node {
         floor = new Box(floorW, 0.5f, floorL);
         floorGeom = new Geometry("Box", floor);
         floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
-        floorGeom.addControl(new RigidBodyControl(new BoxCollisionShape(new Vector3f(floorW, 0.5f, floorL)), 0));
-        bulletAppState.getPhysicsSpace().add(floorGeom);        
+        RigidBodyControl RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(floorGeom),0f);
+        floorGeom.addControl(RBC);
+        bulletAppState.getPhysicsSpace().add(RBC);
+        //bulletAppState.getPhysicsSpace().add(floorGeom);
         
         initMaterial(am);
        
