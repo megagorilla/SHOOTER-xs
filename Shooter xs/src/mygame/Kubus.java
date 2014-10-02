@@ -72,8 +72,8 @@ public class Kubus extends Node{
 
     private void initMaterial(){
         kubusMat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
-        kubusMat.setColor("GlowColor", ColorRGBA.randomColor());
-        kubusMat.setColor("Color", ColorRGBA.Gray);
+        //kubusMat.setColor("GlowColor", ColorRGBA.randomColor());
+        kubusMat.setColor("Color", ColorRGBA.randomColor());
         
         kubusGeom.setMaterial(kubusMat);
     }

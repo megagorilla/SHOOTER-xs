@@ -22,6 +22,7 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -86,7 +87,7 @@ public class Main extends SimpleApplication {
         
         
         createLight();
-        initViewport();
+//        initViewport();
         cube = new ArrayList<Kubus>();
         generateCubes();
         setUpKeys();
@@ -101,7 +102,7 @@ public class Main extends SimpleApplication {
 
         rootNode.attachChild(world);
         
-        if(false){ //enable/disable debug mode
+        if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
@@ -124,7 +125,7 @@ public class Main extends SimpleApplication {
     public void initViewport(){
         fpp = new FilterPostProcessor(assetManager);
         bloom = new BloomFilter(BloomFilter.GlowMode.Objects);      
-        bloom.setDownSamplingFactor(10.0f); 
+        bloom.setDownSamplingFactor(1.0f); 
         fpp.addFilter(bloom);
         
         viewPort.addProcessor(fpp);
@@ -135,6 +136,11 @@ public class Main extends SimpleApplication {
         sun.setColor(ColorRGBA.Yellow);
         sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
         rootNode.addLight(sun);
+        /* this shadow needs a directional light */
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 1024, 4);
+        dlsr.setLight(sun);
+        viewPort.addProcessor(dlsr); 
+ 
     }
   
     float randomFloat(int negOrPos){

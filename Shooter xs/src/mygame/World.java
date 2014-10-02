@@ -50,7 +50,7 @@ public class World extends Node {
         floorMat.setColor("Diffuse",ColorRGBA.White);
         floorMat.setColor("Specular",ColorRGBA.White);
         floorMat.setFloat("Shininess", 64f);
-        floorMat.setColor("GlowColor", ColorRGBA.LightGray);
+        //floorMat.setColor("GlowColor", ColorRGBA.LightGray);
         floorMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
         
         floorGeom.setMaterial(floorMat);

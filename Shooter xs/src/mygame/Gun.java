@@ -59,7 +59,7 @@ public class Gun extends Node {
 
         gunMat.setColor("Color",ColorRGBA.Green);
         gunMat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
-        gunMat.getAdditionalRenderState().setWireframe(true);
+        //gunMat.getAdditionalRenderState().setWireframe(true);
         
         gunGeom.setMaterial(gunMat);
         gunGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
