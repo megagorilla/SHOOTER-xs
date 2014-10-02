@@ -36,16 +36,15 @@ public class World extends Node {
     World(AssetManager assetManager, BulletAppState bulletAppState, float floorW, float floorL){
         am = assetManager;
        
-        floor = new Box(floorW, 0.5f, floorL);
+        floor = new Box(floorW, 0.01f, floorL);
         floorGeom = new Geometry("Box", floor);
         floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
         RigidBodyControl RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(floorGeom),0f);
         floorGeom.addControl(RBC);
         bulletAppState.getPhysicsSpace().add(RBC);
-        //bulletAppState.getPhysicsSpace().add(floorGeom);
         
         initMaterial(am);
-       
+        
         attachChild(floorGeom);
     }
     
