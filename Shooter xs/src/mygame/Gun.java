@@ -5,7 +5,6 @@
 package mygame;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -68,25 +67,24 @@ public class Gun extends Node {
         bulletCollisionShape = new SphereCollisionShape(0.1f);
     }
     
-        public void shoot(){
-                bullets.add(new Geometry("bullet", bullet));
-                bullets.get(bullets.size()-1).setMaterial(gunMat);
-                bullets.get(bullets.size()-1).setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-                bullets.get(bullets.size()-1).setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(2)));
-                
-                bulletNodes.add(new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(bullets.get(bullets.size()-1)), 0.1f));
-                bulletNodes.get(bulletNodes.size()-1).setCcdMotionThreshold(0.015f);
-                bulletNodes.get(bulletNodes.size()-1).setCcdSweptSphereRadius(0.01f);
-                bulletNodes.get(bullets.size()-1).setLinearVelocity(cam.getDirection().mult(250));
-                bullets.get(bullets.size()-1).addControl(bulletNodes.get(bullets.size()-1));
-                bulletAppState.getPhysicsSpace().add(bulletNodes.get(bullets.size()-1));
-                attachChild(bullets.get(bullets.size()-1));
-                if(bullets.size()>50){
-                    detachChild(bullets.get(0));
-                    bulletAppState.getPhysicsSpace().remove(bulletNodes.get(0));
-                    bullets.remove(0);
-                    bulletNodes.remove(0);
-                }
-                
+    public void shoot(){
+        bullets.add(new Geometry("bullet", bullet));
+        bullets.get(bullets.size()-1).setMaterial(gunMat);
+        bullets.get(bullets.size()-1).setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        bullets.get(bullets.size()-1).setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(2)));
+        
+        bulletNodes.add(new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(bullets.get(bullets.size()-1)), 0.1f));
+        bulletNodes.get(bulletNodes.size()-1).setCcdMotionThreshold(0.015f);
+        bulletNodes.get(bulletNodes.size()-1).setCcdSweptSphereRadius(0.01f);
+        bulletNodes.get(bullets.size()-1).setLinearVelocity(cam.getDirection().mult(250));
+        bullets.get(bullets.size()-1).addControl(bulletNodes.get(bullets.size()-1));
+        bulletAppState.getPhysicsSpace().add(bulletNodes.get(bullets.size()-1));
+        attachChild(bullets.get(bullets.size()-1));
+        if(bullets.size()>50){
+            detachChild(bullets.get(0));
+            bulletAppState.getPhysicsSpace().remove(bulletNodes.get(0));
+             bullets.remove(0);
+             bulletNodes.remove(0);
+        }      
     }
 }
