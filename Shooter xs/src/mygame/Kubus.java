@@ -32,9 +32,12 @@ public class Kubus extends Node{
     public Kubus(AssetManager assetManager, BulletAppState bulletAppState, Vector3f dimension, Vector3f position){
         am = assetManager;
         BAS = bulletAppState;
+        this.position = position;
+        this.dimension = dimension;
         
         kubus = new Box(dimension.x, dimension.y, dimension.z);
         kubusGeom = new Geometry("Box", kubus);
+        kubusGeom.setLocalTranslation(position);
     
         initMaterial();
         
@@ -43,7 +46,7 @@ public class Kubus extends Node{
         kubusGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         RBC.setPhysicsLocation(position);
         BAS.getPhysicsSpace().add(RBC);
-        
+
         attachChild(kubusGeom);
     }
 
@@ -63,10 +66,10 @@ public class Kubus extends Node{
         this.position = position;
     }
 
-    public Geometry getkubusGeom() {
+    public Geometry getKubusGeom() {
         return kubusGeom;
     }
-    
+
     private void initMaterial(){
         kubusMat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
         kubusMat.setColor("GlowColor", ColorRGBA.randomColor());

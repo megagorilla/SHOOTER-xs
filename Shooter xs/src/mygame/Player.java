@@ -77,36 +77,35 @@ public class Player extends Node implements ActionListener {
     }
 
     private void setUpKeys() {
-    inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-    inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-    inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-    inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-    inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-    inputManager.addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-    inputManager.addListener(this, "Left");
-    inputManager.addListener(this, "Right");
-    inputManager.addListener(this, "Up");
-    inputManager.addListener(this, "Down");
-    inputManager.addListener(this, "Jump");
-    inputManager.addListener(this, "Shoot");
-
-  }
+        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
+        inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
+        inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("Shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addListener(this, "Left");
+        inputManager.addListener(this, "Right");
+        inputManager.addListener(this, "Up");
+        inputManager.addListener(this, "Down");
+        inputManager.addListener(this, "Jump");
+        inputManager.addListener(this, "Shoot");
+    }
     
     public void onAction(String binding, boolean value, float tpf) {
       if (binding.equals("Left")) {
-      if (value) { left = true; } else { left = false; }
-    } else if (binding.equals("Right")) {
-      if (value) { right = true; } else { right = false; }
-    } else if (binding.equals("Up")) {
-      if (value) { up = true; } else { up = false; }
-    } else if (binding.equals("Down")) {
-      if (value) { down = true; } else { down = false; }
-    } else if(binding.equals("Shoot")) {
-      if (value) { shoot = true; } else { shoot = false;}
-    } else if (binding.equals("Jump")) {
-        player.jump();
+        if (value) { left = true; } else { left = false; }
+      } else if (binding.equals("Right")) {
+        if (value) { right = true; } else { right = false; }
+      } else if (binding.equals("Up")) {
+        if (value) { up = true; } else { up = false; }
+      } else if (binding.equals("Down")) {
+        if (value) { down = true; } else { down = false; }
+      } else if(binding.equals("Shoot")) {
+        if (value) { shoot = true; } else { shoot = false;}
+      } else if (binding.equals("Jump")) {
+          player.jump();
+      }
     }
-}
     
     public void setMinigun(){
         gun.setMaxBullets(100);
