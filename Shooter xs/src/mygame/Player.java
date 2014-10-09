@@ -140,9 +140,8 @@ public class Player extends Node implements ActionListener {
                 shootdelay =10;
                 gunSound.playInstance();
             }
-            else
-                shootdelay-=gunspeed*tpf;
         }
+        shootdelay-=gunspeed*tpf;
         walkDirection.y = 0;
         player.setWalkDirection(walkDirection);
         cam.setLocation(player.getPhysicsLocation());

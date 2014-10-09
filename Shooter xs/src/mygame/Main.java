@@ -10,6 +10,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResults;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -22,6 +23,8 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -51,6 +54,15 @@ public class Main extends SimpleApplication {
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
         
+                /** Write text on the screen (HUD) */
+        guiNode.detachAllChildren();
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        BitmapText helloText = new BitmapText(guiFont, false);
+        helloText.setSize(guiFont.getCharSet().getRenderedSize());
+        helloText.setText("Hello World");
+        helloText.setLocalTranslation(300, helloText.getLineHeight(), 0);
+        guiNode.attachChild(helloText);
+ 
         
         createLight();
         initViewport();
@@ -70,6 +82,8 @@ public class Main extends SimpleApplication {
             player.debug();
             player.setMinigun();
         }
+        AmmoCrate AC1 = new AmmoCrate(bulletAppState, assetManager);
+        rootNode.attachChild(AC1);
     }
 
     @Override
@@ -99,5 +113,13 @@ public class Main extends SimpleApplication {
         sun.setColor(ColorRGBA.Yellow);
         sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
         rootNode.addLight(sun);
-    }
+        
+        /* this shadow needs a directional light */
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 1024, 4);
+        dlsr.setLight(sun);
+        dlsr.setEdgeFilteringMode(EdgeFilteringMode.Bilinear);
+        dlsr.setShadowIntensity(0.5f);
+        viewPort.addProcessor(dlsr); 
+        
+   }
 }
