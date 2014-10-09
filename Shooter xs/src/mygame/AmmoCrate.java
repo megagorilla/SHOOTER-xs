@@ -32,21 +32,16 @@ public class AmmoCrate extends Node{
     
     private BitmapText text;
     
-    AmmoCrate(BulletAppState bulletappstate,AssetManager assetmanager){
+    AmmoCrate(BulletAppState bulletappstate,AssetManager assetmanager, float x, float z){
         bulletAppState = bulletappstate;
         assetManager = assetmanager;
         
-        BitmapFont fnt = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        text = new BitmapText(fnt);
-        text.setSize(2f);
-        text.setText("DERPDERP");
-        attachChild(text);
         ammoBox = new Box(1, 2, 0.5f);
         ammoGeom = new Geometry("AmmoCrate", ammoBox);
         initMaterial();
         Quaternion rotation = new Quaternion(1, 1, 1, 1);
-        this.setLocalRotation(rotation);
-        this.setLocalTranslation(0,100,0);
+        ammoGeom.setLocalRotation(rotation);
+        ammoGeom.setLocalTranslation(x,100,z);
         RigidBodyControl ammoNode = new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(ammoGeom), 1);
         ammoGeom.addControl(ammoNode);
         bulletAppState.getPhysicsSpace().add(ammoNode);

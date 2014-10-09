@@ -41,6 +41,7 @@ public class Main extends SimpleApplication {
     Player player;
     public Gun gun;
     BitmapText currentMagSize;
+    private List<AmmoCrate> AC = new ArrayList<AmmoCrate>();
     
     public static void main(String[] args) {
 
@@ -78,8 +79,12 @@ public class Main extends SimpleApplication {
             player.debug();
             player.setMinigun();
         }
-        AmmoCrate AC1 = new AmmoCrate(bulletAppState, assetManager);
-        rootNode.attachChild(AC1);
+        
+        for(int i = 0; i< 10; i ++){
+            AC.add(new AmmoCrate(bulletAppState, assetManager,0,i*10));
+            rootNode.attachChild(AC.get(AC.size()-1));
+        }
+        
     }
 
     @Override

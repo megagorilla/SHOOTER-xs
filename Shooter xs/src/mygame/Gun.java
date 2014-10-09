@@ -81,7 +81,7 @@ public class Gun extends Node {
         bullets.get(bullets.size()-1).setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         bullets.get(bullets.size()-1).setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(1)));
         
-        bulletNodes.add(new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(bullets.get(bullets.size()-1)), 1f));
+        bulletNodes.add(new RigidBodyControl(CollisionShapeFactory.createDynamicMeshShape(bullets.get(bullets.size()-1)), 0.1f));
         bulletNodes.get(bulletNodes.size()-1).setCcdMotionThreshold(0.015f);
         bulletNodes.get(bulletNodes.size()-1).setCcdSweptSphereRadius(0.005f);
         bulletNodes.get(bullets.size()-1).setLinearVelocity(cam.getDirection().mult(100));
