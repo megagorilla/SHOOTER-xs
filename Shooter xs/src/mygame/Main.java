@@ -40,6 +40,7 @@ public class Main extends SimpleApplication {
     private BloomFilter bloom;
     Player player;
     public Gun gun;
+    private List<AmmoCrate> AC = new ArrayList<AmmoCrate>();
     
     public static void main(String[] args) {
 
@@ -65,7 +66,6 @@ public class Main extends SimpleApplication {
  
         
         createLight();
-        initViewport();
         
         world = new World(assetManager, bulletAppState, 500f, 500f);
 
@@ -82,8 +82,11 @@ public class Main extends SimpleApplication {
             player.debug();
             player.setMinigun();
         }
-        AmmoCrate AC1 = new AmmoCrate(bulletAppState, assetManager);
-        rootNode.attachChild(AC1);
+        for(int i = 0; i< 10; i ++){
+        AC.add(new AmmoCrate(bulletAppState, assetManager,0,i*10));
+        rootNode.attachChild(AC.get(AC.size()-1));
+        }
+        
     }
 
     @Override
@@ -99,14 +102,6 @@ public class Main extends SimpleApplication {
         return bulletAppState.getPhysicsSpace();
     }
     
-    public void initViewport(){
-        fpp = new FilterPostProcessor(assetManager);
-        bloom = new BloomFilter(BloomFilter.GlowMode.Objects);      
-        bloom.setDownSamplingFactor(1.0f); 
-        fpp.addFilter(bloom);
-        
-        viewPort.addProcessor(fpp);
-    }
     
     public void createLight(){
         DirectionalLight sun = new DirectionalLight();
