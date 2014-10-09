@@ -40,6 +40,7 @@ public class Main extends SimpleApplication {
     private BloomFilter bloom;
     Player player;
     public Gun gun;
+    BitmapText currentMagSize;
     
     public static void main(String[] args) {
 
@@ -53,29 +54,24 @@ public class Main extends SimpleApplication {
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
-        
-                /** Write text on the screen (HUD) */
-        guiNode.detachAllChildren();
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText helloText = new BitmapText(guiFont, false);
-        helloText.setSize(guiFont.getCharSet().getRenderedSize());
-        helloText.setText("Hello World");
-        helloText.setLocalTranslation(300, helloText.getLineHeight(), 0);
-        guiNode.attachChild(helloText);
- 
-        
-        createLight();
-        initViewport();
-        
-        world = new World(assetManager, bulletAppState, 500f, 500f);
 
+        world = new World(assetManager, bulletAppState, 500f, 500f);
+        rootNode.attachChild(world);
+        
         flyCam.setMoveSpeed(50);
         gun = new Gun(assetManager, viewPort, bulletAppState, cam);
         player = new Player(bulletAppState, inputManager,assetManager, cam, gun);
         rootNode.attachChild(gun);
         createLight();
 
-        rootNode.attachChild(world);
+        /** Write text on the screen (HUD) */
+        guiNode.detachAllChildren();
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        currentMagSize = new BitmapText(guiFont, false);
+        currentMagSize.setSize(guiFont.getCharSet().getRenderedSize());
+        currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
+        currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
+        guiNode.attachChild(currentMagSize);
         
         if(false){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
@@ -88,6 +84,7 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+        currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
     }
 
@@ -98,16 +95,7 @@ public class Main extends SimpleApplication {
     public PhysicsSpace getPhysicsSpace() {
         return bulletAppState.getPhysicsSpace();
     }
-    
-    public void initViewport(){
-        fpp = new FilterPostProcessor(assetManager);
-        bloom = new BloomFilter(BloomFilter.GlowMode.Objects);      
-        bloom.setDownSamplingFactor(1.0f); 
-        fpp.addFilter(bloom);
-        
-        viewPort.addProcessor(fpp);
-    }
-    
+
     public void createLight(){
         DirectionalLight sun = new DirectionalLight();
         sun.setColor(ColorRGBA.Yellow);

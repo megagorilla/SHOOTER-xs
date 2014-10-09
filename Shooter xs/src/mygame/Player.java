@@ -37,7 +37,7 @@ public class Player extends Node implements ActionListener {
     
     private Gun gun;
     private float shootdelay = 0;
-    private int inmagazine;
+    private int inMagazine;
     private int magsize = 50;
     private int gunspeed = 50;
     private Vector3f camPos = new Vector3f();
@@ -57,7 +57,7 @@ public class Player extends Node implements ActionListener {
         assetManager = assetmanager;
         cam = Cam;
         gun = gunn;
-        inmagazine = magsize;
+        inMagazine = magsize;
         
         gunSound = new AudioNode(assetManager, "Sounds/lasergun.wav");
         
@@ -73,7 +73,7 @@ public class Player extends Node implements ActionListener {
     
     public void debug(){
         magsize = 2147483647;
-        inmagazine = 2147483647;
+        inMagazine = 2147483647;
     }
 
     private void setUpKeys() {
@@ -116,6 +116,14 @@ public class Player extends Node implements ActionListener {
         gun.setMaxBullets(50);
         gunspeed = 50;
     }
+
+    public int getInMagazine() {
+        return inMagazine;
+    }
+ 
+    public int getMagsize() {
+        return magsize;
+    }
     
     public void update(float tpf){
         camDir.set(cam.getDirection()).multLocal(0.6f);
@@ -133,10 +141,10 @@ public class Player extends Node implements ActionListener {
         if (down) {
             walkDirection.addLocal(camDir.negate());
         }
-        if (shoot && inmagazine > 0) {
+        if (shoot && inMagazine > 0) {
             if(shootdelay <= 0){
                 gun.shoot();
-                inmagazine--;
+                inMagazine--;
                 shootdelay =10;
                 gunSound.playInstance();
             }
