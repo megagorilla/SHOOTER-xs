@@ -10,6 +10,9 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResult;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -19,6 +22,8 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -39,8 +44,8 @@ public class Main extends SimpleApplication {
     private BulletAppState bulletAppState;
     Player player;
     public Gun gun;
+    private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
     BitmapText currentMagSize;
-    private List<AmmoCrate> AC = new ArrayList<AmmoCrate>();
     private List<Enemy> Enemies = new ArrayList<Enemy>();
     
     public static void main(String[] args) {
@@ -62,6 +67,7 @@ public class Main extends SimpleApplication {
         flyCam.setMoveSpeed(50);
         gun = new Gun(assetManager, viewPort, bulletAppState, cam);
         player = new Player(bulletAppState, inputManager,assetManager, cam, gun);
+        rootNode.attachChild(player);
         rootNode.attachChild(gun);
         createLight();
 
@@ -74,15 +80,17 @@ public class Main extends SimpleApplication {
         currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
         guiNode.attachChild(currentMagSize);
         
-        if(false){ //enable/disable debug mode
+        if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
         }
         
-        for(int i = 0; i< 10; i ++){
-            AC.add(new AmmoCrate(bulletAppState, assetManager,0,i*10));
-            rootNode.attachChild(AC.get(AC.size()-1));
+        for(int i = 0; i< 2; i ++){
+                ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,0,10*i));
+                rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
+                Quaternion rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
+                
         }
 
         for(int i = 0; i< 10; i ++){
@@ -104,6 +112,17 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
+        Vector3f playerLocation = player.getCamLocation();
+        for(int i = 0; i< ammoCrates.size();i++){
+            Vector3f crateLocation = ammoCrates.get(i).getLocalTranslation();
+            if(playerLocation.distance(crateLocation) < 4f){
+                System.out.println("ammocrate number " + i + " removed!");
+                player.addammo(10);
+                rootNode.detachChild(ammoCrates.get(i));
+                ammoCrates.get(i).destroyControl();
+                ammoCrates.remove(i);
+            }
+        }
     }
 
     @Override
@@ -128,4 +147,5 @@ public class Main extends SimpleApplication {
         viewPort.addProcessor(dlsr); 
         
    }
+
 }

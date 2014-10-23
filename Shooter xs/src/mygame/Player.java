@@ -7,7 +7,10 @@ package mygame;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -62,20 +65,37 @@ public class Player extends Node implements ActionListener {
         gunSound = new AudioNode(assetManager, "Sounds/lasergun.wav");
         
         capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+        
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
         player.setGravity(30);
         player.setPhysicsLocation(new Vector3f(0, 10, 0));
+        this.setName("Player");
         bulletAppState.getPhysicsSpace().add(player);
         setUpKeys();
     }
     
+    public Vector3f getCamLocation(){
+        return camPos;
+    }
+    
+    public void addammo(int ammo){
+        if((inMagazine+ammo) >= magsize)
+            inMagazine = magsize;
+        else
+            inMagazine += ammo;
+    }
+    
     public void debug(){
-        magsize = 2147483647;
-        inMagazine = 2147483647;
+        magsize = 20000;
+        inMagazine = 20000;
     }
 
+    public CollisionShape getPlayer() {
+        return player.getCollisionShape();
+    }
+    
     private void setUpKeys() {
         inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
@@ -165,4 +185,6 @@ public class Player extends Node implements ActionListener {
         gun.getLocalTranslation().set(camPos);
         gun.getLocalRotation().set(camRot);
     }
+    
+        
 }
