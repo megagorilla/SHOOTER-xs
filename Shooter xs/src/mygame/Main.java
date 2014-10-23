@@ -9,6 +9,7 @@ package mygame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -36,12 +37,11 @@ import java.util.Random;
 public class Main extends SimpleApplication {
     private World world;
     private BulletAppState bulletAppState;
-    private FilterPostProcessor fpp;
-    private BloomFilter bloom;
     Player player;
     public Gun gun;
     BitmapText currentMagSize;
     private List<AmmoCrate> AC = new ArrayList<AmmoCrate>();
+    private List<Enemy> Enemies = new ArrayList<Enemy>();
     
     public static void main(String[] args) {
 
@@ -51,7 +51,7 @@ public class Main extends SimpleApplication {
     
     @Override
     public void simpleInitApp() {
-        viewPort.setBackgroundColor(ColorRGBA.White);
+        viewPort.setBackgroundColor(ColorRGBA.Cyan);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         stateManager.attach(bulletAppState);
@@ -84,7 +84,20 @@ public class Main extends SimpleApplication {
             AC.add(new AmmoCrate(bulletAppState, assetManager,0,i*10));
             rootNode.attachChild(AC.get(AC.size()-1));
         }
+
+        for(int i = 0; i< 10; i ++){
+            Enemies.add(new Enemy(assetManager, bulletAppState, new Vector3f(4f, 50f, 4f)));            
+            rootNode.attachChild(Enemies.get(Enemies.size()-1));            
+        }
         
+        CollisionResults results = new CollisionResults();
+        for(Enemy x : Enemies){            
+            world.getWorldNode().collideWith(x.getWorldBound(), results);
+            Vector3f currentPos = x.getPosition();
+            if(results.size() > 1){
+                x.setLocalTranslation(currentPos.x + 1f, currentPos.y, currentPos.z + 1f);
+            }
+        }
     }
 
     @Override

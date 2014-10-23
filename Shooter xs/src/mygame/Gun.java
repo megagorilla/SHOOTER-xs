@@ -62,7 +62,7 @@ public class Gun extends Node {
         //gunMat.getAdditionalRenderState().setWireframe(true);
         
         gunGeom.setMaterial(gunMat);
-        gunGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        gunGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
         attachChild(gunGeom);
         initBullet();
         

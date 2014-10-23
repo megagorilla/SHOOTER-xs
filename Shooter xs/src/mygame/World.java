@@ -11,11 +11,15 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,42 +32,104 @@ public class World extends Node {
     private AssetManager am;
     private BulletAppState BAS;
     private Box floor;
-    private Geometry floorGeom;
-    private Material floorMat;
+    private RigidBodyControl floorPhy;
     private float floorW;
     private float floorL;
-    private Box wall;
-    private Geometry wallGeom;
+    private Geometry floorGeom;
+    private Material floorMat;
+    private Geometry wallLeftGeom;
+    private Geometry wallRightGeom;
+    private Geometry wallTopGeom;
+    private Geometry wallBottomGeom;
+    private Material wallMat;
     private Random rand = new Random();
     private List<Kubus> cube;
+    private Node worldNode = new Node();
     
     World(AssetManager assetManager, BulletAppState bulletAppState, float floorW, float floorL){
         am = assetManager;
         BAS = bulletAppState;
        
-        floor = new Box(floorW, 0.01f, floorL);
-        floorGeom = new Geometry("Box", floor);
+        /* Floor */
+        floor = new Box(floorW, 0f, floorL);
+        floorGeom = new Geometry("Floor", floor);
+        floorGeom.setLocalTranslation(0, 0f, 0);
         floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
-        RigidBodyControl RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(floorGeom),0f);
-        floorGeom.addControl(RBC);
+        floorPhy = new RigidBodyControl(0f);
+        floorGeom.addControl(floorPhy);
+        bulletAppState.getPhysicsSpace().add(floorPhy);
+        
+        /* Walls */
+        Box wallLeft = new Box(1.5f, 20f, floorL);
+        wallLeftGeom = new Geometry("Box", wallLeft);
+        wallLeftGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallLeftGeom.setLocalTranslation(-floorW, 20f, 0f);
+        RigidBodyControl RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallLeftGeom),0f);
+        wallLeftGeom.addControl(RBC);
         bulletAppState.getPhysicsSpace().add(RBC);
         
+        Box wallRight = new Box(1.5f, 20f, floorL);
+        wallRightGeom = new Geometry("Box", wallRight);
+        wallRightGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallRightGeom.setLocalTranslation(floorW, 20f, 0f);        
+        RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallRightGeom),0f);
+        wallRightGeom.addControl(RBC);
+        bulletAppState.getPhysicsSpace().add(RBC);
+        
+        Box wallTop = new Box(floorW, 20f, 1.5f);
+        wallTopGeom = new Geometry("Box", wallTop);
+        wallTopGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallTopGeom.setLocalTranslation(0f, 20f, floorL);
+        RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallTopGeom),0f);
+        wallTopGeom.addControl(RBC);
+        bulletAppState.getPhysicsSpace().add(RBC);
+ 
+        Box wallBottom = new Box(floorW, 20f, 1.5f);
+        wallBottomGeom = new Geometry("Box", wallBottom);
+        wallBottomGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallBottomGeom.setLocalTranslation(0f, 20f, -floorL);
+        RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallBottomGeom),0f);
+        wallBottomGeom.addControl(RBC);
+        bulletAppState.getPhysicsSpace().add(RBC);
+        
+        /* Cubes */
         cube = new ArrayList<Kubus>();
         generateCubes(500);
-        initMaterial(am);
         
-        attachChild(floorGeom);
+        initMaterial(am);
+                        
+        worldNode.attachChild(floorGeom);
+        worldNode.attachChild(wallLeftGeom);
+        worldNode.attachChild(wallRightGeom);
+        worldNode.attachChild(wallTopGeom);
+        worldNode.attachChild(wallBottomGeom);
+        
+        attachChild(worldNode);
+    }
+
+    public Node getWorldNode() {
+        return worldNode;
     }
     
     private void initMaterial(AssetManager assetManager){
-        floorMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        /*floorMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         floorMat.setColor("Diffuse",ColorRGBA.White);
         floorMat.setColor("Specular",ColorRGBA.White);
         floorMat.setFloat("Shininess", 64f);
-        //floorMat.setColor("GlowColor", ColorRGBA.LightGray);
-        floorMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+        floorMat.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);*/
+        
+        floorMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        floorMat.setColor("Color", ColorRGBA.DarkGray);        
         
         floorGeom.setMaterial(floorMat);
+        
+        wallMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        wallMat.setColor("Color", ColorRGBA.DarkGray);
+        
+        wallLeftGeom.setMaterial(wallMat);
+        wallRightGeom.setMaterial(wallMat);
+        wallTopGeom.setMaterial(wallMat);
+        wallBottomGeom.setMaterial(wallMat);
     }
     
     float randomFloat(int negOrPos){
@@ -89,11 +155,13 @@ public class World extends Node {
             Vector3f pos = new Vector3f(posX, sizeVal, posZ);
             if(cube.isEmpty()){
                 cube.add(new Kubus(am, BAS, size, pos));
-                attachChild(cube.get(i));
+                worldNode.attachChild(cube.get(i));
             } else {
                 cube.add(new Kubus(am, BAS, size, pos));
-                attachChild(cube.get(i));
+                worldNode.attachChild(cube.get(i));
             }       
         }  
     }
+    
+    public static final Quaternion YAW090   = new Quaternion().fromAngleAxis(FastMath.PI/2,   new Vector3f(1,0,0));
 }

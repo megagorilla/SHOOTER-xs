@@ -22,12 +22,12 @@ import com.jme3.scene.shape.Box;
 public class Kubus extends Node{
     private AssetManager am;
     private BulletAppState BAS;
+    private RigidBodyControl RBC;
     private Box kubus;
     private Geometry kubusGeom;
     private Material kubusMat;
     private Vector3f dimension;
-    private Vector3f position;
-    private RigidBodyControl RBC;
+    private Vector3f position;    
     
     public Kubus(AssetManager assetManager, BulletAppState bulletAppState, Vector3f dimension, Vector3f position){
         am = assetManager;
