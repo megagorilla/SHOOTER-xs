@@ -112,10 +112,14 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
+        ammoCratePickup();
+    }
+
+    private void ammoCratePickup(){
         Vector3f playerLocation = player.getCamLocation();
         for(int i = 0; i< ammoCrates.size();i++){
             Vector3f crateLocation = ammoCrates.get(i).getLocalTranslation();
-            if(playerLocation.distance(crateLocation) < 4f){
+            if(playerLocation.distance(crateLocation) < 5f){
                 System.out.println("ammocrate number " + i + " removed!");
                 player.addammo(10);
                 rootNode.detachChild(ammoCrates.get(i));
@@ -124,7 +128,7 @@ public class Main extends SimpleApplication {
             }
         }
     }
-
+    
     @Override
     public void simpleRender(RenderManager rm) {
     }
