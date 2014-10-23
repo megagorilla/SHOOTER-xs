@@ -5,6 +5,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -39,10 +40,10 @@ public class Enemy extends Node {
         enemyGeom.setLocalTranslation(position);
         enemyMat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
         enemyMat.setColor("Color", ColorRGBA.Red);
-
-        CC = new CharacterControl();        
-        CS = new BoxCollisionShape(new Vector3f(2f, 4f, 2f));
-        CC.setCollisionShape(CS);
+        
+//        CS = new BoxCollisionShape(CollisionShapeFactory.createBoxShape(enemyGeom)));
+        CC = new CharacterControl(CollisionShapeFactory.createBoxShape(enemyGeom), 1);        
+        
         enemyGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         CC.setPhysicsLocation(position);
         BAS.getPhysicsSpace().add(CC);
