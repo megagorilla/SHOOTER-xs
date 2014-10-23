@@ -55,7 +55,7 @@ public class World extends Node {
         floorGeom = new Geometry("Floor", floor);
         floorGeom.setLocalTranslation(0, 0f, 0);
         floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
-        floorPhy = new RigidBodyControl(0f);
+        floorPhy = new RigidBodyControl(CollisionShapeFactory.createMeshShape(floorGeom),0f);
         floorGeom.addControl(floorPhy);
         bulletAppState.getPhysicsSpace().add(floorPhy);
         
