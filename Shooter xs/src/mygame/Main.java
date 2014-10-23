@@ -98,14 +98,15 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
-        Vector3f playerLocation = player.getLocalTranslation();
-        for(int i = 0; i< ammoCrates.size()-1;i++){
-            if(playerLocation.distance(ammoCrates.get(i).getLocalTranslation()) > 10f){
+        Vector3f playerLocation = player.getCamLocation();
+        for(int i = 0; i< ammoCrates.size();i++){
+            Vector3f crateLocation = ammoCrates.get(i).getLocalTranslation();
+            if(playerLocation.distance(crateLocation) < 4f){
                 System.out.println("ammocrate number " + i + " removed!");
-//                player.addammo(10);
-//                rootNode.detachChild(ammoCrates.get(i));
-//                ammoCrates.get(i).destroyControl();
-//                ammoCrates.remove(i);
+                player.addammo(10);
+                rootNode.detachChild(ammoCrates.get(i));
+                ammoCrates.get(i).destroyControl();
+                ammoCrates.remove(i);
             }
         }
     }

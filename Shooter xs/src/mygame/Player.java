@@ -76,6 +76,10 @@ public class Player extends Node implements ActionListener {
         setUpKeys();
     }
     
+    public Vector3f getCamLocation(){
+        return camPos;
+    }
+    
     public void addammo(int ammo){
         if((inMagazine+ammo) >= magsize)
             inMagazine = magsize;
