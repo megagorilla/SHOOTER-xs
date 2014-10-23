@@ -45,12 +45,17 @@ public class AmmoCrate extends Node{
         initMaterial();
         rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
                 ammoGeom = new Geometry("AmmoCrate", ammoBox);
+//        ammoGeom.setLocalRotation(rotation);
         
         ammoGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         ammoGeom.setMaterial(crateMaterial);
         ammoControl = new RigidBodyControl(new BoxCollisionShape(new  Vector3f(1, 2, 0.5f)));
         this.addControl(ammoControl);
+
         bulletAppState.getPhysicsSpace().add(this);
+        ammoControl.setPhysicsLocation(new Vector3f(0,100,10*z));
+//        ammoGeom.setLocalTranslation(0,100,10*z);
+        this.setLocalTranslation(0,100,10*z);
         attachChild(ammoGeom);
     }
     
@@ -58,7 +63,10 @@ public class AmmoCrate extends Node{
         return ammoGeom;
     }
     
-    
+    public void destroyControl(){
+        bulletAppState.getPhysicsSpace().remove(this);
+        this.removeControl(ammoControl);
+    }
     
     private void initMaterial(){
         crateMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

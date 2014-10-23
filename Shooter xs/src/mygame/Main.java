@@ -80,18 +80,17 @@ public class Main extends SimpleApplication {
         currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
         guiNode.attachChild(currentMagSize);
         
-        if(false){ //enable/disable debug mode
+        if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
         }
         
-        for(int i = 0; i< 10; i ++){
+        for(int i = 0; i< 2; i ++){
                 ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,0,10*i));
                 rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
                 Quaternion rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
-                ammoCrates.get(ammoCrates.size()-1).setLocalRotation(rotation);
-                ammoCrates.get(ammoCrates.size()-1).setLocalTranslation(0,100,10*i);
+                
         }
     }
 
@@ -99,7 +98,16 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
-//        for(AmmoCrate crate : ammoCrates)
+        Vector3f playerLocation = player.getLocalTranslation();
+        for(int i = 0; i< ammoCrates.size()-1;i++){
+            if(playerLocation.distance(ammoCrates.get(i).getLocalTranslation()) > 10f){
+                System.out.println("ammocrate number " + i + " removed!");
+//                player.addammo(10);
+//                rootNode.detachChild(ammoCrates.get(i));
+//                ammoCrates.get(i).destroyControl();
+//                ammoCrates.remove(i);
+            }
+        }
     }
 
     @Override

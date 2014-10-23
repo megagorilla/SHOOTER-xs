@@ -76,9 +76,16 @@ public class Player extends Node implements ActionListener {
         setUpKeys();
     }
     
+    public void addammo(int ammo){
+        if((inMagazine+ammo) >= magsize)
+            inMagazine = magsize;
+        else
+            inMagazine += ammo;
+    }
+    
     public void debug(){
-        magsize = 2147483647;
-        inMagazine = 2147483647;
+        magsize = 20000;
+        inMagazine = 20000;
     }
 
     public CollisionShape getPlayer() {
