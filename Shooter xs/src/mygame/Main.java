@@ -9,6 +9,9 @@ package mygame;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -18,6 +21,8 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -40,8 +45,8 @@ public class Main extends SimpleApplication {
     private BloomFilter bloom;
     Player player;
     public Gun gun;
+    private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
     BitmapText currentMagSize;
-    private List<AmmoCrate> AC = new ArrayList<AmmoCrate>();
     
     public static void main(String[] args) {
 
@@ -62,6 +67,7 @@ public class Main extends SimpleApplication {
         flyCam.setMoveSpeed(50);
         gun = new Gun(assetManager, viewPort, bulletAppState, cam);
         player = new Player(bulletAppState, inputManager,assetManager, cam, gun);
+        rootNode.attachChild(player);
         rootNode.attachChild(gun);
         createLight();
 
@@ -81,16 +87,19 @@ public class Main extends SimpleApplication {
         }
         
         for(int i = 0; i< 10; i ++){
-            AC.add(new AmmoCrate(bulletAppState, assetManager,0,i*10));
-            rootNode.attachChild(AC.get(AC.size()-1));
+                ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,0,10*i));
+                rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
+                Quaternion rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
+                ammoCrates.get(ammoCrates.size()-1).setLocalRotation(rotation);
+                ammoCrates.get(ammoCrates.size()-1).setLocalTranslation(0,100,10*i);
         }
-        
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
+//        for(AmmoCrate crate : ammoCrates)
     }
 
     @Override
@@ -115,4 +124,5 @@ public class Main extends SimpleApplication {
         viewPort.addProcessor(dlsr); 
         
    }
+
 }
