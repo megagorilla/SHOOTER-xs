@@ -38,14 +38,13 @@ public class AmmoCrate extends Node{
     
    
     
-    AmmoCrate(BulletAppState bulletappstate,AssetManager assetmanager, float x, float z){
+    AmmoCrate(BulletAppState bulletappstate,AssetManager assetmanager, Vector3f location){
         bulletAppState = bulletappstate;
         assetManager = assetmanager;
         ammoBox = new Box(1, 2, 0.5f);
         initMaterial();
         rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
-                ammoGeom = new Geometry("AmmoCrate", ammoBox);
-//        ammoGeom.setLocalRotation(rotation);
+        ammoGeom = new Geometry("AmmoCrate", ammoBox);
         
         ammoGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         ammoGeom.setMaterial(crateMaterial);
@@ -53,9 +52,9 @@ public class AmmoCrate extends Node{
         this.addControl(ammoControl);
 
         bulletAppState.getPhysicsSpace().add(this);
-        ammoControl.setPhysicsLocation(new Vector3f(0,100,10*z));
-//        ammoGeom.setLocalTranslation(0,100,10*z);
-        this.setLocalTranslation(0,100,10*z);
+        ammoControl.setPhysicsLocation(new Vector3f(location));
+        ammoControl.setPhysicsRotation(rotation);
+        
         attachChild(ammoGeom);
     }
     

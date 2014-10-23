@@ -86,13 +86,6 @@ public class Main extends SimpleApplication {
             player.setMinigun();
         }
         
-        for(int i = 0; i< 2; i ++){
-                ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,0,10*i));
-                rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
-                Quaternion rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
-                
-        }
-
         for(int i = 0; i< 10; i ++){
             Enemies.add(new Enemy(assetManager, bulletAppState, new Vector3f(4f, 50f, 4f)));            
             rootNode.attachChild(Enemies.get(Enemies.size()-1));            
@@ -112,9 +105,32 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
+        ammoDrop();
         ammoCratePickup();
     }
 
+    private void ammoDrop(){
+        if(ammoCrates.size()< 10){
+            ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,randomVectorBetween(-250, 250)));
+            rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
+        }
+    }
+    
+    private Vector3f randomVectorBetween(int min, int max){
+        Vector3f locVector = new Vector3f();
+        locVector.y = 100f;
+        
+        Random rand = new Random();
+        float finalX = rand.nextFloat() * (max - min) + min;
+        locVector.x = finalX;
+        
+        rand = new Random();
+        finalX = rand.nextFloat() * (max - min) + min;
+        locVector.z = finalX;
+        
+        return locVector;
+    }
+    
     private void ammoCratePickup(){
         Vector3f playerLocation = player.getCamLocation();
         for(int i = 0; i< ammoCrates.size();i++){
