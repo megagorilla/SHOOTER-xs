@@ -68,7 +68,7 @@ public class Player extends Node implements ActionListener {
         player.setJumpSpeed(20);
         player.setFallSpeed(30);
         player.setGravity(30);
-        player.setPhysicsLocation(new Vector3f(0, 10, 0));
+        player.setPhysicsLocation(new Vector3f(10, 10, 10));
         this.setName("Player");
         bulletAppState.getPhysicsSpace().add(player);
         setUpKeys();

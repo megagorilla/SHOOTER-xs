@@ -69,14 +69,14 @@ public class Main extends SimpleApplication {
         currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
         guiNode.attachChild(currentMagSize);
         
-        if(false){ //enable/disable debug mode
+        if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
         }
         
         for(int i = 0; i< 10; i ++){
-            Enemies.add(new Enemy(assetManager, bulletAppState, new Vector3f(4f, 50f, 4f)));            
+            Enemies.add(new Enemy(assetManager, bulletAppState, new Vector3f(i *7f, 4f, i*7f)));            
             rootNode.attachChild(Enemies.get(Enemies.size()-1));            
         }
         
@@ -96,10 +96,16 @@ public class Main extends SimpleApplication {
         player.update(tpf);
         ammoDrop();
         ammoCratePickup();
+        Vector3f playerLoc = player.getCamLocation();
+        for(Enemy x : Enemies){
+            Vector3f enemyLoc = x.getLocalTranslation();
+            playerLoc.y = 0;
+            x.lookAt(playerLoc, new Vector3f(0, 1, 0) );
+        }
     }
 
     private void ammoDrop(){
-        if(ammoCrates.size()< 10){
+        if(ammoCrates.size()< 100){
             ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,randomVectorBetween(-250, 250)));
             rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
         }

@@ -49,7 +49,6 @@ public class AmmoCrate extends Node{
         bulletAppState.getPhysicsSpace().add(this);
         ammoControl.setPhysicsLocation(new Vector3f(location));
         ammoControl.setPhysicsRotation(rotation);
-        
         attachChild(ammoGeom);
     }
     

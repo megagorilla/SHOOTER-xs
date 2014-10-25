@@ -59,7 +59,7 @@ public class World extends Node {
         /* Walls */
         Box wallLeft = new Box(1.5f, 20f, floorL);
         wallLeftGeom = new Geometry("Box", wallLeft);
-        wallLeftGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallLeftGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallLeftGeom.setLocalTranslation(-floorW, 20f, 0f);
         RigidBodyControl RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallLeftGeom),0f);
         wallLeftGeom.addControl(RBC);
@@ -67,7 +67,7 @@ public class World extends Node {
         
         Box wallRight = new Box(1.5f, 20f, floorL);
         wallRightGeom = new Geometry("Box", wallRight);
-        wallRightGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallRightGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallRightGeom.setLocalTranslation(floorW, 20f, 0f);        
         RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallRightGeom),0f);
         wallRightGeom.addControl(RBC);
@@ -75,7 +75,7 @@ public class World extends Node {
         
         Box wallTop = new Box(floorW, 20f, 1.5f);
         wallTopGeom = new Geometry("Box", wallTop);
-        wallTopGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallTopGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallTopGeom.setLocalTranslation(0f, 20f, floorL);
         RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallTopGeom),0f);
         wallTopGeom.addControl(RBC);
@@ -83,7 +83,7 @@ public class World extends Node {
  
         Box wallBottom = new Box(floorW, 20f, 1.5f);
         wallBottomGeom = new Geometry("Box", wallBottom);
-        wallBottomGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallBottomGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallBottomGeom.setLocalTranslation(0f, 20f, -floorL);
         RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallBottomGeom),0f);
         wallBottomGeom.addControl(RBC);
@@ -91,7 +91,7 @@ public class World extends Node {
         
         /* Cubes */
         cube = new ArrayList<Kubus>();
-        generateCubes(500);
+        generateCubes(0);
         
         initMaterial(am);
                         
