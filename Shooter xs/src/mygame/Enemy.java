@@ -3,8 +3,10 @@ package mygame;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -30,20 +32,20 @@ public class Enemy extends Node {
     Geometry enemyGeom;
     Material enemyMat;
     
-    public Enemy(AssetManager assetManager, BulletAppState bulletAppState, Vector3f pos){
+    public Enemy(String name, AssetManager assetManager, BulletAppState bulletAppState, Vector3f pos){
         am = assetManager;
         BAS = bulletAppState;
         position = pos;
         
         enemyBox = new Box(2f, 4f, 2f);
-        enemyGeom= new Geometry("Enemy", enemyBox);
+        enemyGeom= new Geometry(name, enemyBox);
         enemyGeom.setLocalTranslation(position);
         enemyMat = new Material(am, "Common/MatDefs/Misc/Unshaded.j3md");
         enemyMat.setColor("Color", ColorRGBA.Red);
-
-        CC = new CharacterControl();        
-        CS = new BoxCollisionShape(new Vector3f(2f, 4f, 2f));
-        CC.setCollisionShape(CS);
+        
+        // CS = new BoxCollisionShape(CollisionShapeFactory.createBoxShape(enemyGeom)));
+        CC = new CharacterControl(CollisionShapeFactory.createBoxShape(enemyGeom), 1);        
+ 
         enemyGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         CC.setPhysicsLocation(position);
         BAS.getPhysicsSpace().add(CC);
@@ -68,5 +70,18 @@ public class Enemy extends Node {
     
     public Vector3f getPosition() {
         return this.position;
+    }
+
+    public BulletAppState getBAS() {
+        return BAS;
+    }
+
+    public CharacterControl getCC() {
+        return CC;
+    }    
+    
+    public void finishOfEnemy(Enemy e){
+        detachChild(e.getEnemyGeom());
+        e.getBAS().getPhysicsSpace().remove(e.getCC());
     }
 }

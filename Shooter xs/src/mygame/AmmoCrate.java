@@ -8,9 +8,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.collision.Collidable;
-import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -20,8 +17,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -38,14 +33,13 @@ public class AmmoCrate extends Node{
     
    
     
-    AmmoCrate(BulletAppState bulletappstate,AssetManager assetmanager, float x, float z){
+    AmmoCrate(BulletAppState bulletappstate,AssetManager assetmanager, Vector3f location){
         bulletAppState = bulletappstate;
         assetManager = assetmanager;
         ammoBox = new Box(1, 2, 0.5f);
         initMaterial();
         rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
-                ammoGeom = new Geometry("AmmoCrate", ammoBox);
-//        ammoGeom.setLocalRotation(rotation);
+        ammoGeom = new Geometry("AmmoCrate", ammoBox);
         
         ammoGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         ammoGeom.setMaterial(crateMaterial);
@@ -53,9 +47,8 @@ public class AmmoCrate extends Node{
         this.addControl(ammoControl);
 
         bulletAppState.getPhysicsSpace().add(this);
-        ammoControl.setPhysicsLocation(new Vector3f(0,100,10*z));
-//        ammoGeom.setLocalTranslation(0,100,10*z);
-        this.setLocalTranslation(0,100,10*z);
+        ammoControl.setPhysicsLocation(new Vector3f(location));
+        ammoControl.setPhysicsRotation(rotation);
         attachChild(ammoGeom);
     }
     

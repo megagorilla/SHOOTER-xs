@@ -7,6 +7,7 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResult;
@@ -16,18 +17,11 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
@@ -45,6 +39,7 @@ public class Main extends SimpleApplication {
     private BulletAppState bulletAppState;
     Player player;
     public Gun gun;
+    private AudioNode ammoPickup;
     private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
     BitmapText currentMagSize;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
@@ -57,6 +52,7 @@ public class Main extends SimpleApplication {
     
     @Override
     public void simpleInitApp() {
+        ammoPickup = new AudioNode(assetManager, "Sounds/reload.wav");
         viewPort.setBackgroundColor(ColorRGBA.Cyan);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
@@ -87,15 +83,8 @@ public class Main extends SimpleApplication {
             player.setMinigun();
         }
         
-        for(int i = 0; i< 2; i ++){
-                ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,0,10*i));
-                rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
-                Quaternion rotation = new Quaternion().fromAngleAxis(FastMath.PI/4,   new Vector3f(0,0,1));
-                
-        }
-
-        for(int i = 0; i< 10; i ++){
-            Enemies.add(new Enemy(assetManager, bulletAppState, new Vector3f(4f, 50f, 4f)));            
+        for(int i = 0; i < 5; i++){
+            Enemies.add(new Enemy("Enemy "+i, assetManager, bulletAppState, new Vector3f(i *7f, 4f, i*7f)));            
             rootNode.attachChild(Enemies.get(Enemies.size()-1));            
         }
         
@@ -113,32 +102,72 @@ public class Main extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
+        ammoDrop();
+        ammoCratePickup();
+        for(Enemy x : Enemies){
+            Vector3f playerLoc = player.getCamLocation();
+            Vector3f enemyLoc = x.getLocalTranslation();
+            playerLoc.y = 0;
+            x.lookAt(playerLoc, new Vector3f(0, 1, 0));
+        }
+        
+        CollisionResults results = new CollisionResults();
+        
+        outerloop: for(Geometry x: player.getGun().getBullets()){
+            if(player.getGun().getBullets().indexOf(x) > 0){
+                for(Enemy e : Enemies){
+                    e.enemyGeom.collideWith(x.getWorldBound(), results);
+                    for (int i = 0; i < results.size(); i++) {
+                        // Remove bullet
+                        player.getGun().deleteBullet(player.getGun().getBullets().size() - 1);
+                        e.setHealth(e.getHealth() - 20);
+                        if(e.getHealth() <= 0){
+                            e.finishOfEnemy(e);
+                            Enemies.remove(Enemies.indexOf(e));
+                        }
+                        break outerloop;
+                     }
+                }
+            }
+        }
+    }
+
+    private void ammoDrop(){
+        if(ammoCrates.size()< 100){
+            ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,randomVectorBetween(-250, 250)));
+            rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
+        }
+    }
+    
+    private Vector3f randomVectorBetween(int min, int max){
+        Vector3f locVector = new Vector3f();
+        locVector.y = 100f;
+        
+        Random rand = new Random();
+        float finalX = rand.nextFloat() * (max - min) + min;
+        locVector.x = finalX;
+        
+        rand = new Random();
+        finalX = rand.nextFloat() * (max - min) + min;
+        locVector.z = finalX;
+        
+        return locVector;
+    }
+    
+    private void ammoCratePickup(){
         Vector3f playerLocation = player.getCamLocation();
         for(int i = 0; i< ammoCrates.size();i++){
             Vector3f crateLocation = ammoCrates.get(i).getLocalTranslation();
-            if(playerLocation.distance(crateLocation) < 4f){
-                System.out.println("ammocrate number " + i + " removed!");
+            if(playerLocation.distance(crateLocation) < 5f){
                 player.addammo(10);
                 rootNode.detachChild(ammoCrates.get(i));
                 ammoCrates.get(i).destroyControl();
                 ammoCrates.remove(i);
+                ammoPickup.playInstance();
             }
         }
-        CollisionResults results = new CollisionResults();
-        
-        for(Geometry x: player.getGun().getBullets()){
-            x.collideWith(Enemies.get(0).getEnemyGeom().getWorldBound(), results);
-            for (int i = 0; i < results.size(); i++) {
-               // For each hit, we know distance, impact point, name of geometry.
-               float dist = results.getCollision(i).getDistance();
-               Vector3f pt = results.getCollision(i).getContactPoint();
-               String hit = results.getCollision(i).getGeometry().getName();
-               System.out.println("* Collision #" + i);
-               System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
-             }
-        }
     }
-
+    
     @Override
     public void simpleRender(RenderManager rm) {
     }

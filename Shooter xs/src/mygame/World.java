@@ -9,7 +9,6 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -18,8 +17,6 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -55,14 +52,14 @@ public class World extends Node {
         floorGeom = new Geometry("Floor", floor);
         floorGeom.setLocalTranslation(0, 0f, 0);
         floorGeom.setShadowMode(RenderQueue.ShadowMode.Receive);
-        floorPhy = new RigidBodyControl(0f);
+        floorPhy = new RigidBodyControl(CollisionShapeFactory.createMeshShape(floorGeom),0f);
         floorGeom.addControl(floorPhy);
         bulletAppState.getPhysicsSpace().add(floorPhy);
         
         /* Walls */
         Box wallLeft = new Box(1.5f, 20f, floorL);
         wallLeftGeom = new Geometry("Box", wallLeft);
-        wallLeftGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallLeftGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallLeftGeom.setLocalTranslation(-floorW, 20f, 0f);
         RigidBodyControl RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallLeftGeom),0f);
         wallLeftGeom.addControl(RBC);
@@ -70,7 +67,7 @@ public class World extends Node {
         
         Box wallRight = new Box(1.5f, 20f, floorL);
         wallRightGeom = new Geometry("Box", wallRight);
-        wallRightGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallRightGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallRightGeom.setLocalTranslation(floorW, 20f, 0f);        
         RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallRightGeom),0f);
         wallRightGeom.addControl(RBC);
@@ -78,7 +75,7 @@ public class World extends Node {
         
         Box wallTop = new Box(floorW, 20f, 1.5f);
         wallTopGeom = new Geometry("Box", wallTop);
-        wallTopGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallTopGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallTopGeom.setLocalTranslation(0f, 20f, floorL);
         RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallTopGeom),0f);
         wallTopGeom.addControl(RBC);
@@ -86,7 +83,7 @@ public class World extends Node {
  
         Box wallBottom = new Box(floorW, 20f, 1.5f);
         wallBottomGeom = new Geometry("Box", wallBottom);
-        wallBottomGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        wallBottomGeom.setShadowMode(RenderQueue.ShadowMode.Cast);
         wallBottomGeom.setLocalTranslation(0f, 20f, -floorL);
         RBC = new RigidBodyControl(CollisionShapeFactory.createMeshShape(wallBottomGeom),0f);
         wallBottomGeom.addControl(RBC);
@@ -94,7 +91,7 @@ public class World extends Node {
         
         /* Cubes */
         cube = new ArrayList<Kubus>();
-        generateCubes(500);
+        generateCubes(0);
         
         initMaterial(am);
                         
