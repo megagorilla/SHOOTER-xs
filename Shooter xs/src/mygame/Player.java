@@ -144,6 +144,10 @@ public class Player extends Node implements ActionListener {
     public int getMagsize() {
         return magsize;
     }
+
+    public Gun getGun() {
+        return gun;
+    }
     
     public void update(float tpf){
         camDir.set(cam.getDirection()).multLocal(0.6f);

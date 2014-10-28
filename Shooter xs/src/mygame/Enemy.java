@@ -22,6 +22,7 @@ public class Enemy extends Node {
     private AssetManager am;
     private BulletAppState BAS;
     private RigidBodyControl RBC;
+    int health = 100;
     CharacterControl CC;
     BoxCollisionShape CS;
     Vector3f position;
@@ -47,11 +48,24 @@ public class Enemy extends Node {
         CC.setPhysicsLocation(position);
         BAS.getPhysicsSpace().add(CC);
         enemyGeom.addControl(CC);
+        
         enemyGeom.setMaterial(enemyMat);
         
         attachChild(enemyGeom);
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public Geometry getEnemyGeom() {
+        return enemyGeom;
+    }
+    
     public Vector3f getPosition() {
         return this.position;
     }

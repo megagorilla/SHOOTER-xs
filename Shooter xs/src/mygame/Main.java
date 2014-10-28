@@ -12,6 +12,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResult;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
@@ -80,7 +81,7 @@ public class Main extends SimpleApplication {
         currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
         guiNode.attachChild(currentMagSize);
         
-        if(true){ //enable/disable debug mode
+        if(false){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
@@ -122,6 +123,19 @@ public class Main extends SimpleApplication {
                 ammoCrates.get(i).destroyControl();
                 ammoCrates.remove(i);
             }
+        }
+        CollisionResults results = new CollisionResults();
+        
+        for(Geometry x: player.getGun().getBullets()){
+            x.collideWith(Enemies.get(0).getEnemyGeom().getWorldBound(), results);
+            for (int i = 0; i < results.size(); i++) {
+               // For each hit, we know distance, impact point, name of geometry.
+               float dist = results.getCollision(i).getDistance();
+               Vector3f pt = results.getCollision(i).getContactPoint();
+               String hit = results.getCollision(i).getGeometry().getName();
+               System.out.println("* Collision #" + i);
+               System.out.println("  You shot " + hit + " at " + pt + ", " + dist + " wu away.");
+             }
         }
     }
 

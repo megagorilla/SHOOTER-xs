@@ -67,8 +67,11 @@ public class Gun extends Node {
         initBullet();
         
     }
-    
-    
+
+    public List<Geometry> getBullets() {
+        return bullets;
+    }
+   
     private void initBullet(){
         bullet = new Sphere(10, 10, 0.05f, true, false);
         bullet.setTextureMode(Sphere.TextureMode.Projected);
