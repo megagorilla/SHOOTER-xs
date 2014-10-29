@@ -77,7 +77,7 @@ public class Main extends SimpleApplication {
         currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
         guiNode.attachChild(currentMagSize);
         
-        if(false){ //enable/disable debug mode
+        if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
@@ -107,10 +107,10 @@ public class Main extends SimpleApplication {
             ammoCratePickup();
         for(Enemy x : Enemies){
             Vector3f playerLoc = player.getCamLocation();            
-            //Vector3f enemyLoc = x.getCC().getPhysicsLocation();
-            //x.getCC().setPhysicsLocation(new Vector3f(enemyLoc.x + 0.1f, enemyLoc.y, enemyLoc.z + 0.1f));
-            playerLoc.y = 0;
-            x.lookAt(playerLoc, new Vector3f(0, 1, 0));            
+//            Vector3f enemyLoc = x.getCC().getPhysicsLocation();
+//            x.getCC().setPhysicsLocation(new Vector3f(enemyLoc.x + 0.1f, enemyLoc.y, enemyLoc.z + 0.1f));
+            playerLoc.setY(x.getLocalTranslation().y);
+            x.lookAt(playerLoc, new Vector3f(0, 1, 0));
         }
         
         CollisionResults results = new CollisionResults();
