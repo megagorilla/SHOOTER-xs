@@ -46,6 +46,9 @@ public class Enemy extends Node {
         // CS = new BoxCollisionShape(CollisionShapeFactory.createBoxShape(enemyGeom)));
         CC = new CharacterControl(CollisionShapeFactory.createBoxShape(enemyGeom), 1);        
  
+        CC.setJumpSpeed(20);
+        CC.setFallSpeed(30);
+        CC.setGravity(30);
         enemyGeom.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         CC.setPhysicsLocation(position);
         BAS.getPhysicsSpace().add(CC);

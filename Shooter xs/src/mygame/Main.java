@@ -103,12 +103,14 @@ public class Main extends SimpleApplication {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
         player.update(tpf);
         ammoDrop();
-        ammoCratePickup();
+        if(player.getInMagazine() < player.getMagsize())
+            ammoCratePickup();
         for(Enemy x : Enemies){
-            Vector3f playerLoc = player.getCamLocation();
-            Vector3f enemyLoc = x.getLocalTranslation();
+            Vector3f playerLoc = player.getCamLocation();            
+            //Vector3f enemyLoc = x.getCC().getPhysicsLocation();
+            //x.getCC().setPhysicsLocation(new Vector3f(enemyLoc.x + 0.1f, enemyLoc.y, enemyLoc.z + 0.1f));
             playerLoc.y = 0;
-            x.lookAt(playerLoc, new Vector3f(0, 1, 0));
+            x.lookAt(playerLoc, new Vector3f(0, 1, 0));            
         }
         
         CollisionResults results = new CollisionResults();
