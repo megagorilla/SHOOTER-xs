@@ -42,6 +42,7 @@ public class Main extends SimpleApplication {
     private AudioNode ammoPickup;
     private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
     BitmapText currentMagSize;
+    BitmapText currentEnemies;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
     
     public static void main(String[] args) {
@@ -52,6 +53,9 @@ public class Main extends SimpleApplication {
     
     @Override
     public void simpleInitApp() {
+        //StartScreenState startScreenState = new StartScreenState(this);
+        //stateManager.attach(startScreenState);
+        
         ammoPickup = new AudioNode(assetManager, "Sounds/reload.wav");
         viewPort.setBackgroundColor(ColorRGBA.Cyan);
         bulletAppState = new BulletAppState();
@@ -67,24 +71,15 @@ public class Main extends SimpleApplication {
         rootNode.attachChild(player);
         rootNode.attachChild(gun);
         createLight();
-
-        /** Write text on the screen (HUD) */
-        guiNode.detachAllChildren();
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        currentMagSize = new BitmapText(guiFont, false);
-        currentMagSize.setSize(guiFont.getCharSet().getRenderedSize());
-        currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
-        currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
-        guiNode.attachChild(currentMagSize);
         
-        if(true){ //enable/disable debug mode
+        if(false){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
         }
         
         for(int i = 0; i < 5; i++){
-            Enemies.add(new Enemy("Enemy "+i, assetManager, bulletAppState, new Vector3f(i *7f, 4f, i*7f)));            
+            Enemies.add(new Enemy("Enemy "+i, assetManager, bulletAppState, randomVectorBetween(-250, 250, 2)));            
             rootNode.attachChild(Enemies.get(Enemies.size()-1));            
         }
         
@@ -96,19 +91,51 @@ public class Main extends SimpleApplication {
                 x.setLocalTranslation(currentPos.x + 1f, currentPos.y, currentPos.z + 1f);
             }
         }
+        
+        /** Write text on the screen (HUD) */
+        guiNode.detachAllChildren();
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        
+        currentMagSize = new BitmapText(guiFont, false);
+        currentMagSize.setSize(guiFont.getCharSet().getRenderedSize());
+        currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
+        currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
+        
+        currentEnemies = new BitmapText(guiFont, false);
+        currentEnemies.setSize(guiFont.getCharSet().getRenderedSize());
+        currentEnemies.setText(Enemies.size() + " / " + 5);
+        currentEnemies.setLocalTranslation(400, currentEnemies.getLineHeight(), 0);
+        
+        guiNode.attachChild(currentMagSize);
+        guiNode.attachChild(currentEnemies);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
+        currentEnemies.setText(Enemies.size() + " / " + 5);
         player.update(tpf);
         ammoDrop();
         if(player.getInMagazine() < player.getMagsize())
             ammoCratePickup();
         for(Enemy x : Enemies){
-            Vector3f playerLoc = player.getCamLocation();            
-//            Vector3f enemyLoc = x.getCC().getPhysicsLocation();
-//            x.getCC().setPhysicsLocation(new Vector3f(enemyLoc.x + 0.1f, enemyLoc.y, enemyLoc.z + 0.1f));
+            Vector3f playerLoc = player.getCamLocation();                
+            Vector3f curLoc = x.CC.getPhysicsLocation();
+            float distance = curLoc.distance(playerLoc);          
+
+            float moveX = FastMath.floor(playerLoc.x) - FastMath.floor(curLoc.x);
+            float moveZ = FastMath.floor(playerLoc.z) - FastMath.floor(curLoc.z);
+            float moveTotal = FastMath.abs(moveX) + FastMath.abs(moveZ);
+
+            moveX = (moveX / moveTotal) * 0.5f;
+            moveZ = (moveZ / moveTotal) * 0.5f;
+
+            //while (distance > 10) {                
+                x.CC.setPhysicsLocation(new Vector3f((curLoc.x + moveX), curLoc.y, (curLoc.z + moveZ)));//.addLocal(moveX, moveY);
+                //curLoc = x.enemyGeom.getLocalTranslation();
+                //distance = curLoc.distance(playerLoc);
+            //}
+            
             playerLoc.setY(x.getLocalTranslation().y);
             x.lookAt(playerLoc, new Vector3f(0, 1, 0));
         }
@@ -136,14 +163,14 @@ public class Main extends SimpleApplication {
 
     private void ammoDrop(){
         if(ammoCrates.size()< 100){
-            ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,randomVectorBetween(-250, 250)));
+            ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,randomVectorBetween(-250, 250, 100)));
             rootNode.attachChild(ammoCrates.get(ammoCrates.size()-1));
         }
     }
     
-    private Vector3f randomVectorBetween(int min, int max){
+    private Vector3f randomVectorBetween(int min, int max, float y){
         Vector3f locVector = new Vector3f();
-        locVector.y = 100f;
+        locVector.y = y;
         
         Random rand = new Random();
         float finalX = rand.nextFloat() * (max - min) + min;
