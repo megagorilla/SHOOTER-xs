@@ -1,6 +1,8 @@
 package mygame;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
+import com.jme3.audio.AudioSource;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -14,6 +16,7 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
+import java.util.Random;
 
 /**
  *
@@ -31,11 +34,15 @@ public class Enemy extends Node {
     Box enemyBox;
     Geometry enemyGeom;
     Material enemyMat;
+    AudioNode enemySound;
+    int soundDelay = 0;
+    
     
     public Enemy(String name, AssetManager assetManager, BulletAppState bulletAppState, Vector3f pos){
         am = assetManager;
         BAS = bulletAppState;
         position = pos;
+        enemySound = new AudioNode(assetManager, "Sounds/Enemy.wav");
         
         enemyBox = new Box(2f, 4f, 2f);
         enemyGeom= new Geometry(name, enemyBox);
@@ -57,8 +64,24 @@ public class Enemy extends Node {
         enemyGeom.setMaterial(enemyMat);
         
         attachChild(enemyGeom);
+        attachChild(enemySound);
     }
 
+    public void playSound(){
+        soundDelay -= 1/60;
+        if(soundDelay < 0){
+            if(enemySound.getStatus() == AudioSource.Status.Stopped)
+                enemySound.play();
+            soundDelay = randomInt(10, 100);
+        }
+    }
+    
+    private int randomInt(int min, int max){
+        Random r = new Random();
+        int R = r.nextInt(max-min) + min;
+        return R;
+    }
+    
     public int getHealth() {
         return health;
     }

@@ -40,9 +40,11 @@ public class Main extends SimpleApplication {
     Player player;
     public Gun gun;
     private AudioNode ammoPickup;
+    AudioNode enemyDying;
     private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
     BitmapText currentMagSize;
-    BitmapText currentEnemies;
+    BitmapText currentScore;
+    private int score = 0;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
     
     public static void main(String[] args) {
@@ -57,6 +59,7 @@ public class Main extends SimpleApplication {
         //stateManager.attach(startScreenState);
         
         ammoPickup = new AudioNode(assetManager, "Sounds/reload.wav");
+        enemyDying = new AudioNode(assetManager, "Sounds/deathEnemy.wav");
         viewPort.setBackgroundColor(ColorRGBA.Cyan);
         bulletAppState = new BulletAppState();
         bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
@@ -94,30 +97,39 @@ public class Main extends SimpleApplication {
         
         /** Write text on the screen (HUD) */
         guiNode.detachAllChildren();
-        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        guiFont = assetManager.loadFont("Interface/Fonts/Aharoni.fnt");
         
         currentMagSize = new BitmapText(guiFont, false);
         currentMagSize.setSize(guiFont.getCharSet().getRenderedSize());
-        currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
-        currentMagSize.setLocalTranslation(300, currentMagSize.getLineHeight(), 0);
+        currentMagSize.setText("Ammo: " +player.getInMagazine() + " / " + player.getMagsize());
+        currentMagSize.setColor(ColorRGBA.White);
+        currentMagSize.setSize(50);
+        currentMagSize.setLocalTranslation(0, this.settings.getHeight() -currentMagSize.getLineHeight(), 0);
         
-        currentEnemies = new BitmapText(guiFont, false);
-        currentEnemies.setSize(guiFont.getCharSet().getRenderedSize());
-        currentEnemies.setText(Enemies.size() + " / " + 5);
-        currentEnemies.setLocalTranslation(400, currentEnemies.getLineHeight(), 0);
+        currentScore = new BitmapText(guiFont, false);
+        currentScore.setSize(guiFont.getCharSet().getRenderedSize());
+        currentScore.setText("Score: " +score);
+        currentScore.setSize(50);
+        currentScore.setLocalTranslation(0, this.settings.getHeight(), 0);
         
         guiNode.attachChild(currentMagSize);
-        guiNode.attachChild(currentEnemies);
+        guiNode.attachChild(currentScore);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        currentMagSize.setText(player.getInMagazine() + " / " + player.getMagsize());
-        currentEnemies.setText(Enemies.size() + " / " + 5);
+        currentMagSize.setText("Ammo: " +player.getInMagazine() + " / " + player.getMagsize());
+        currentScore.setText("Score: " +score);
         player.update(tpf);
         ammoDrop();
         if(player.getInMagazine() < player.getMagsize())
             ammoCratePickup();
+        
+        enemyMovement();
+        collisionBetweenBulletAndEnemy();
+    }
+    
+    private void enemyMovement(){
         for(Enemy x : Enemies){
             Vector3f playerLoc = player.getCamLocation();                
             Vector3f curLoc = x.CC.getPhysicsLocation();
@@ -138,8 +150,11 @@ public class Main extends SimpleApplication {
             
             playerLoc.setY(x.getLocalTranslation().y);
             x.lookAt(playerLoc, new Vector3f(0, 1, 0));
+            x.playSound();
         }
-        
+    }
+    
+    private void collisionBetweenBulletAndEnemy(){
         CollisionResults results = new CollisionResults();
         
         outerloop: for(Geometry x: player.getGun().getBullets()){
@@ -153,6 +168,10 @@ public class Main extends SimpleApplication {
                         if(e.getHealth() <= 0){
                             e.finishOfEnemy(e);
                             Enemies.remove(Enemies.indexOf(e));
+                            newEnemy();
+                            newEnemy();
+                            score += 10;
+                            enemyDying.playInstance();
                         }
                         break outerloop;
                      }
@@ -160,7 +179,12 @@ public class Main extends SimpleApplication {
             }
         }
     }
-
+    
+    private void newEnemy(){
+        Enemies.add(new Enemy("Enemy "+ Enemies.size(), assetManager, bulletAppState, randomVectorBetween(-250, 250, 2)));            
+        rootNode.attachChild(Enemies.get(Enemies.size()-1));
+    }
+    
     private void ammoDrop(){
         if(ammoCrates.size()< 100){
             ammoCrates.add(new AmmoCrate(bulletAppState, assetManager,randomVectorBetween(-250, 250, 100)));
