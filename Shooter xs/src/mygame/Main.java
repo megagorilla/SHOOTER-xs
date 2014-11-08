@@ -13,6 +13,8 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 /**
  *
@@ -53,6 +55,19 @@ public class Main extends SimpleApplication implements ScreenController {
     
     public static void main(String[] args) {
        Main app = new Main();
+       app.setShowSettings(false);
+        AppSettings settings = new AppSettings(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)screenSize.getWidth();
+        int height = (int)screenSize.getHeight();
+        settings.put("Width", width);
+        settings.put("Height", height);
+        settings.setFullscreen(true);
+        settings.put("Shooter X", "My awesome Game");
+        settings.put("VSync", true);
+        //Anti-Aliasing
+        settings.put("Samples", 4);
+        app.setSettings(settings);
        app.start();
     }
     
