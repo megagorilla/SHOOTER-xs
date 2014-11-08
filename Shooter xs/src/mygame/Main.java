@@ -37,21 +37,27 @@ import java.util.Random;
 public class Main extends SimpleApplication {
     private World world;
     private BulletAppState bulletAppState;
-    Player player;
-    public Gun gun;
+    private Player player;
+    private Gun gun;
     private AudioNode ammoPickup;
-    AudioNode enemyDying;
+    private AudioNode enemyDying;
     private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
-    BitmapText currentMagSize;
-    BitmapText currentScore;
+    private BitmapText currentMagSize;
+    private BitmapText currentScore;
     private int score = 0;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
     
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws InterruptedException {
+        startscreen start  = new startscreen();
+        start.setVisible(true);
+        start.start();
+        while(start.isIsClicked()){
+        Thread.sleep(100);
+        }
         Main app = new Main();
         app.start();
     }
+    
     
     @Override
     public void simpleInitApp() {
@@ -75,7 +81,7 @@ public class Main extends SimpleApplication {
         rootNode.attachChild(gun);
         createLight();
         
-        if(false){ //enable/disable debug mode
+        if(true){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();

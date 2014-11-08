@@ -91,7 +91,7 @@ public class World extends Node {
         
         /* Cubes */
         cube = new ArrayList<Kubus>();
-        generateCubes(250);
+        generateCubes(0);
         
         initMaterial(am);
                         
