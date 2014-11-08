@@ -26,6 +26,9 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.system.AppSettings;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -51,7 +54,19 @@ public class Main extends SimpleApplication {
         
         
         Main app = new Main();
-        
+        app.setShowSettings(false);
+        AppSettings settings = new AppSettings(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)screenSize.getWidth();
+        int height = (int)screenSize.getHeight();
+        settings.put("Width", width);
+        settings.put("Height", height);
+        settings.setFullscreen(true);
+        settings.put("Shooter X", "My awesome Game");
+        settings.put("VSync", true);
+        //Anti-Aliasing
+        settings.put("Samples", 4);
+        app.setSettings(settings);
         app.start();
     }
     
@@ -60,7 +75,8 @@ public class Main extends SimpleApplication {
     public void simpleInitApp() {
         //StartScreenState startScreenState = new StartScreenState(this);
         //stateManager.attach(startScreenState);
-        
+        setDisplayFps(false);
+        setDisplayStatView(false);
         ammoPickup = new AudioNode(assetManager, "Sounds/reload.wav");
         enemyDying = new AudioNode(assetManager, "Sounds/deathEnemy.wav");
         viewPort.setBackgroundColor(ColorRGBA.Cyan);
@@ -78,7 +94,7 @@ public class Main extends SimpleApplication {
         rootNode.attachChild(gun);
         createLight();
         
-        if(true){ //enable/disable debug mode
+        if(false){ //enable/disable debug mode
             bulletAppState.getPhysicsSpace().enableDebug(assetManager);
             player.debug();
             player.setMinigun();
