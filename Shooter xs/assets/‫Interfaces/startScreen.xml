@@ -1,5 +1,0 @@
-<panel height="25%" width="35%" ...>
-  <effect>
-    <onStartScreen name="move" mode="in" direction="top" length="300" startDelay="0" inherit="true"/>
-  </effect>
-</panel>
