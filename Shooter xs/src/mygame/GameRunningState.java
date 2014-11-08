@@ -137,9 +137,28 @@ public class GameRunningState extends AbstractAppState {
         if(player.getInMagazine() < player.getMagsize())
             ammoCratePickup();
         
+        deathCollisionCheck();
         enemyMovement();
         collisionBetweenBulletAndEnemy();
     }
+    
+    private void deathCollisionCheck(){
+        Vector3f playerLocation = player.getCamLocation();
+        for(int i = 0; i< Enemies.size();i++){
+            Vector3f enemyLocation = Enemies.get(i).getLocalTranslation();
+            if(playerLocation.distance(enemyLocation) < 50f){
+                System.out.println("ONLY DEATH IS CERTAIN");
+                Enemies.get(i).finishOfEnemy(Enemies.get(i));
+                Enemies.remove(Enemies.indexOf(Enemies.get(i)));
+
+                try{
+                    this.wait(10000);
+                }catch(Exception e){
+                    
+                }
+            }
+        }
+    }    
     
     private void enemyMovement(){
         for(Enemy x : Enemies){
@@ -153,12 +172,7 @@ public class GameRunningState extends AbstractAppState {
 
             moveX = (moveX / moveTotal) * 0.5f;
             moveZ = (moveZ / moveTotal) * 0.5f;
-            
-            if((Float.isNaN(moveX) && Float.isNaN(moveZ)) || (moveX < 0 && moveZ < 0)){
-                x.setHealth(-100);
-                score = 0;
-            }
-            
+
             x.CC.setPhysicsLocation(new Vector3f((curLoc.x + moveX), curLoc.y, (curLoc.z + moveZ)));
 
             playerLoc.setY(x.getLocalTranslation().y);
@@ -181,10 +195,8 @@ public class GameRunningState extends AbstractAppState {
                         if(e.getHealth() <= 0){
                             e.finishOfEnemy(e);
                             Enemies.remove(Enemies.indexOf(e));
-                            if(e.getHealth() != -100){
-                                newEnemy();                                                            
-                                score += 10;                                
-                            }
+                            newEnemy();                                                            
+                            score += 10;  
                             newEnemy();
                             enemyDying.playInstance();
                         }
