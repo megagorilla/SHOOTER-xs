@@ -56,6 +56,7 @@ public class GameRunningState extends AbstractAppState {
     BitmapText currentMagSize;
     BitmapText currentScore;
     private int score = 0;
+    private BitmapText GameoverText;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
 
     public GameRunningState(SimpleApplication app) {
@@ -147,15 +148,13 @@ public class GameRunningState extends AbstractAppState {
         for(int i = 0; i< Enemies.size();i++){
             Vector3f enemyLocation = Enemies.get(i).getLocalTranslation();
             if(playerLocation.distance(enemyLocation) < 50f){
-                System.out.println("ONLY DEATH IS CERTAIN");
-                Enemies.get(i).finishOfEnemy(Enemies.get(i));
-                Enemies.remove(Enemies.indexOf(Enemies.get(i)));
-
-                try{
-                    this.wait(10000);
-                }catch(Exception e){
-                    
-                }
+                bulletAppState.setEnabled(false);
+                GameoverText = new BitmapText(guiFont, false);
+                GameoverText.setSize(guiFont.getCharSet().getRenderedSize());
+                GameoverText.setText("Game over. Score: " +score);
+                GameoverText.setSize(50);
+                GameoverText.setLocalTranslation(400, 400, 0);
+                guiNode.attachChild(GameoverText);
             }
         }
     }    
