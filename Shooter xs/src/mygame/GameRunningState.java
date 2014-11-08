@@ -57,6 +57,7 @@ public class GameRunningState extends AbstractAppState {
     BitmapText currentScore;
     private int score = 0;
     private BitmapText GameoverText;
+    private boolean gameover = false;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
 
     public GameRunningState(SimpleApplication app) {
@@ -131,23 +132,25 @@ public class GameRunningState extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
-        currentMagSize.setText("Ammo: " +player.getInMagazine() + " / " + player.getMagsize());
-        currentScore.setText("Score: " +score);
-        player.update(tpf);
-        ammoDrop();
-        if(player.getInMagazine() < player.getMagsize())
-            ammoCratePickup();
-        
-        deathCollisionCheck();
-        enemyMovement();
-        collisionBetweenBulletAndEnemy();
+        if(!gameover){
+            currentMagSize.setText("Ammo: " +player.getInMagazine() + " / " + player.getMagsize());
+            currentScore.setText("Score: " +score);
+            player.update(tpf);
+            ammoDrop();
+            if(player.getInMagazine() < player.getMagsize())
+                ammoCratePickup();
+
+            deathCollisionCheck();
+            enemyMovement();
+            collisionBetweenBulletAndEnemy();
+        }
     }
     
     private void deathCollisionCheck(){
-        Vector3f playerLocation = player.getCamLocation();
+        Vector3f playerLocation = player.getLocalTranslation();
         for(int i = 0; i< Enemies.size();i++){
-            Vector3f enemyLocation = Enemies.get(i).getLocalTranslation();
-            if(playerLocation.distance(enemyLocation) < 50f){
+            Vector3f enemyLocation = Enemies.get(i).getCC().getPhysicsLocation();
+            if(playerLocation.distance(enemyLocation) < 30f){
                 bulletAppState.setEnabled(false);
                 GameoverText = new BitmapText(guiFont, false);
                 GameoverText.setSize(guiFont.getCharSet().getRenderedSize());
@@ -155,6 +158,7 @@ public class GameRunningState extends AbstractAppState {
                 GameoverText.setSize(50);
                 GameoverText.setLocalTranslation(400, 400, 0);
                 guiNode.attachChild(GameoverText);
+                this.gameover = true;
             }
         }
     }    
