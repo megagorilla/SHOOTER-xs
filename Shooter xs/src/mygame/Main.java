@@ -48,13 +48,10 @@ public class Main extends SimpleApplication {
     private List<Enemy> Enemies = new ArrayList<Enemy>();
     
     public static void main(String[] args) throws InterruptedException {
-        startscreen start  = new startscreen();
-        start.setVisible(true);
-        start.start();
-        while(start.isIsClicked()){
-        Thread.sleep(100);
-        }
+        
+        
         Main app = new Main();
+        
         app.start();
     }
     
@@ -130,9 +127,27 @@ public class Main extends SimpleApplication {
         ammoDrop();
         if(player.getInMagazine() < player.getMagsize())
             ammoCratePickup();
-        
+        deathCollisionCheck();
         enemyMovement();
         collisionBetweenBulletAndEnemy();
+    }
+    
+    private void deathCollisionCheck(){
+        Vector3f playerLocation = player.getCamLocation();
+        for(int i = 0; i< Enemies.size();i++){
+            Vector3f enemyLocation = Enemies.get(i).getLocalTranslation();
+            if(playerLocation.distance(enemyLocation) < 50f){
+                System.out.println("ONLY DEATH IS CERTAIN");
+                Enemies.get(i).finishOfEnemy(Enemies.get(i));
+                Enemies.remove(Enemies.indexOf(Enemies.get(i)));
+                
+                try{
+                this.wait(10000);
+                }catch(Exception e){
+                    
+                }
+            }
+        }
     }
     
     private void enemyMovement(){
@@ -163,13 +178,13 @@ public class Main extends SimpleApplication {
     private void collisionBetweenBulletAndEnemy(){
         CollisionResults results = new CollisionResults();
         
-        outerloop: for(Geometry x: player.getGun().getBullets()){
-            if(player.getGun().getBullets().indexOf(x) > 0){
+        outerloop: for(int j = 0; j<player.getGun().getBullets().size();j++){
+            if(player.getGun().getBullets().indexOf(player.getGun().getBullets().get(j)) > 0){
                 for(Enemy e : Enemies){
-                    e.enemyGeom.collideWith(x.getWorldBound(), results);
-                    for (int i = 0; i < results.size(); i++) {
+                    e.enemyGeom.collideWith(player.getGun().getBullets().get(j).getWorldBound(), results);
+                    if(results.size()>0){
                         // Remove bullet
-                        player.getGun().deleteBullet(player.getGun().getBullets().size() - 1);
+                        player.getGun().deleteBullet(j);
                         e.setHealth(e.getHealth() - 20);
                         if(e.getHealth() <= 0){
                             e.finishOfEnemy(e);
