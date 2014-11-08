@@ -47,6 +47,7 @@ public class Main extends SimpleApplication {
     private List<AmmoCrate> ammoCrates = new ArrayList<AmmoCrate>();
     private BitmapText currentMagSize;
     private BitmapText currentScore;
+    private BitmapText GameoverText;
     private int score = 0;
     private List<Enemy> Enemies = new ArrayList<Enemy>();
     
@@ -154,14 +155,13 @@ public class Main extends SimpleApplication {
             Vector3f enemyLocation = Enemies.get(i).getLocalTranslation();
             if(playerLocation.distance(enemyLocation) < 50f){
                 System.out.println("ONLY DEATH IS CERTAIN");
-                Enemies.get(i).finishOfEnemy(Enemies.get(i));
-                Enemies.remove(Enemies.indexOf(Enemies.get(i)));
-                
-                try{
-                this.wait(10000);
-                }catch(Exception e){
-                    
-                }
+                bulletAppState.setEnabled(false);
+                GameoverText = new BitmapText(guiFont, false);
+                GameoverText.setSize(guiFont.getCharSet().getRenderedSize());
+                GameoverText.setText("Game over. Score: " +score);
+                GameoverText.setSize(50);
+                GameoverText.setLocalTranslation(0, this.settings.getHeight()/2, 0);
+                guiNode.attachChild(GameoverText);
             }
         }
     }
