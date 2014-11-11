@@ -140,28 +140,13 @@ public class GameRunningState extends AbstractAppState {
             if(player.getInMagazine() < player.getMagsize())
                 ammoCratePickup();
 
-            //deathCollisionCheck();
+            
             enemyMovement();
             collisionBetweenBulletAndEnemy();
         }
     }
     
-    private void deathCollisionCheck(){
-        Vector3f playerLocation = player.getLocalTranslation();
-        for(int i = 0; i< Enemies.size();i++){
-            Vector3f enemyLocation = Enemies.get(i).getCC().getPhysicsLocation();
-            if(playerLocation.distance(enemyLocation) < 30f){
-                bulletAppState.setEnabled(false);
-                GameoverText = new BitmapText(guiFont, false);
-                GameoverText.setSize(guiFont.getCharSet().getRenderedSize());
-                GameoverText.setText("Game over. Score: " +score);
-                GameoverText.setSize(50);
-                GameoverText.setLocalTranslation(400, 400, 0);
-                guiNode.attachChild(GameoverText);
-                this.gameover = true;
-            }
-        }
-    }    
+    
     
     private void enemyMovement(){
         for(Enemy x : Enemies){
